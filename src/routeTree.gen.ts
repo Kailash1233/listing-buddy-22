@@ -21,6 +21,7 @@ import { Route as DashboardPropertiesIdRouteImport } from './routes/dashboard.pr
 import { Route as DashboardPropertiesNewRouteImport } from './routes/dashboard.properties.new'
 import { Route as ApiPublicBrochureIdRouteImport } from './routes/api/public/brochure.$id'
 import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media.$'
+import { Route as BSubdomainPSlugRouteImport } from './routes/b.$subdomain.p.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -83,6 +84,11 @@ const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
   path: '/api/public/media/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BSubdomainPSlugRoute = BSubdomainPSlugRouteImport.update({
+  id: '/b/$subdomain/p/$slug',
+  path: '/b/$subdomain/p/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
+  '/b/$subdomain/p/$slug': typeof BSubdomainPSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
+  '/b/$subdomain/p/$slug': typeof BSubdomainPSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
+  '/b/$subdomain/p/$slug': typeof BSubdomainPSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/dashboard/properties/'
     | '/api/public/brochure/$id'
     | '/api/public/media/$'
+    | '/b/$subdomain/p/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/dashboard/properties'
     | '/api/public/brochure/$id'
     | '/api/public/media/$'
+    | '/b/$subdomain/p/$slug'
   id:
     | '__root__'
     | '/'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/dashboard/properties/'
     | '/api/public/brochure/$id'
     | '/api/public/media/$'
+    | '/b/$subdomain/p/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -177,6 +189,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   ApiPublicBrochureIdRoute: typeof ApiPublicBrochureIdRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
+  BSubdomainPSlugRoute: typeof BSubdomainPSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMediaSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/b/$subdomain/p/$slug': {
+      id: '/b/$subdomain/p/$slug'
+      path: '/b/$subdomain/p/$slug'
+      fullPath: '/b/$subdomain/p/$slug'
+      preLoaderRoute: typeof BSubdomainPSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -297,6 +317,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   ApiPublicBrochureIdRoute: ApiPublicBrochureIdRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
+  BSubdomainPSlugRoute: BSubdomainPSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
