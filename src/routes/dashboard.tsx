@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useBroker } from "@/hooks/useBroker";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { NotificationBell } from "@/components/NotificationBell";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
@@ -75,6 +76,7 @@ function DashboardLayout() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <NotificationBell brokerId={broker.id} />
             <Button asChild size="sm">
               <Link to="/dashboard/properties/new">
                 <Plus className="size-4" /> <span className="hidden sm:inline">Add property</span>
