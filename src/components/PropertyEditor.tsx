@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Loader2, Sparkles, Wand2 } from "lucide-react";
@@ -6,13 +7,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { parseListing, regenerateCopy } from "@/lib/ai.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
-import {
-  AMENITY_OPTIONS,
-  FACINGS,
-  formatINR,
-  photoPaths,
-  slugify,
-} from "@/lib/property";
+import { AMENITY_OPTIONS, FACINGS, formatINR, photoPaths, slugify } from "@/lib/property";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,6 +22,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PhotoUploader } from "@/components/PhotoUploader";
+
+const PUBLISH_ERRORS: Record<string, string> = {
+  no_credits: "You're out of listing credits. Grab a pack to publish this listing.",
+  pool_exhausted: "Your agency's monthly listing pool is used up.",
+  no_active_subscription: "Your agency plan isn't active. Renew to publish listings.",
+  not_found: "Listing not found.",
+  unauthenticated: "Please sign in again.",
+};
 
 type Draft = {
   title: string;
@@ -117,6 +120,7 @@ export function PropertyEditor({
   const [raw, setRaw] = useState("");
   const [aiBusy, setAiBusy] = useState(false);
   const [saving, setSaving] = useState<"draft" | "publish" | null>(null);
+  const qc = useQueryClient();
   const [reviewed, setReviewed] = useState(!!property);
   const navigate = useNavigate();
   const runParse = useServerFn(parseListing);
@@ -234,12 +238,15 @@ export function PropertyEditor({
         lng: draft.lng ? Number(draft.lng) : null,
         amenities: draft.amenities,
         rera_number: draft.rera_number || null,
-        rera_status: draft.rera_number ? ("provided_unverified" as const) : ("not_provided" as const),
+        rera_status: draft.rera_number
+          ? ("provided_unverified" as const)
+          : ("not_provided" as const),
         photos: draft.photos,
         floor_plan_url: draft.floor_plan[0] ?? null,
-        status: publish ? ("active" as const) : property?.status ?? ("draft" as const),
+        status: property?.status ?? ("draft" as const),
       };
 
+      let saved: Property;
       if (property) {
         const { data, error } = await supabase
           .from("properties")
@@ -248,7 +255,7 @@ export function PropertyEditor({
           .select()
           .single();
         if (error) throw error;
-        onSaved(data as Property, publish);
+        saved = data as Property;
       } else {
         let slug = slugify(
           [draft.bhk && `${draft.bhk}bhk`, draft.property_type, draft.locality]
@@ -268,8 +275,30 @@ export function PropertyEditor({
           .select()
           .single();
         if (error) throw error;
-        onSaved(data as Property, publish);
+        saved = data as Property;
       }
+
+      if (publish && saved.status !== "active") {
+        // Credits/pool are enforced server-side; the client never grants publish rights.
+        const { data: result, error: rpcError } = await supabase.rpc("publish_property", {
+          _property_id: saved.id,
+        });
+        if (rpcError) throw rpcError;
+        const outcome = (result ?? {}) as { ok?: boolean; reason?: string };
+        if (!outcome.ok) {
+          await qc.invalidateQueries({ queryKey: ["broker"] });
+          toast.error(PUBLISH_ERRORS[outcome.reason ?? ""] ?? "Could not publish this listing.");
+          if (outcome.reason === "no_credits" || outcome.reason === "pool_exhausted") {
+            navigate({ to: "/pricing" });
+          }
+          onSaved(saved, false);
+          return;
+        }
+        saved = { ...saved, status: "active" };
+        await qc.invalidateQueries({ queryKey: ["broker"] });
+      }
+
+      onSaved(saved, publish && saved.status === "active");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not save");
     } finally {
@@ -379,7 +408,10 @@ export function PropertyEditor({
           </div>
           <div className="space-y-1.5">
             <Label>Facing</Label>
-            <Select value={draft.facing || "none"} onValueChange={(v) => set("facing", v === "none" ? "" : v)}>
+            <Select
+              value={draft.facing || "none"}
+              onValueChange={(v) => set("facing", v === "none" ? "" : v)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -426,11 +458,21 @@ export function PropertyEditor({
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="lat">Latitude (optional)</Label>
-            <Input id="lat" value={draft.lat} onChange={(e) => set("lat", e.target.value)} placeholder="13.0878" />
+            <Input
+              id="lat"
+              value={draft.lat}
+              onChange={(e) => set("lat", e.target.value)}
+              placeholder="13.0878"
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="lng">Longitude (optional)</Label>
-            <Input id="lng" value={draft.lng} onChange={(e) => set("lng", e.target.value)} placeholder="80.2101" />
+            <Input
+              id="lng"
+              value={draft.lng}
+              onChange={(e) => set("lng", e.target.value)}
+              placeholder="80.2101"
+            />
           </div>
         </div>
       </div>
@@ -488,11 +530,7 @@ export function PropertyEditor({
       </div>
 
       <div className="surface space-y-5 p-5">
-        <PhotoUploader
-          userId={broker.id}
-          paths={draft.photos}
-          onChange={(p) => set("photos", p)}
-        />
+        <PhotoUploader userId={broker.id} paths={draft.photos} onChange={(p) => set("photos", p)} />
         <PhotoUploader
           userId={broker.id}
           paths={draft.floor_plan}
@@ -545,7 +583,9 @@ export function PropertyEditor({
 
       <TabsContent value="ai" className="space-y-6">
         <div className="surface space-y-3 p-5">
-          <Label htmlFor="raw">Paste your property details — even a rough WhatsApp message works</Label>
+          <Label htmlFor="raw">
+            Paste your property details — even a rough WhatsApp message works
+          </Label>
           <Textarea
             id="raw"
             rows={5}

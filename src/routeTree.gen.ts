@@ -13,9 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as BSubdomainIndexRouteImport } from './routes/b.$subdomain.index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard.properties.index'
 import { Route as DashboardPropertiesIdRouteImport } from './routes/dashboard.properties.$id'
 import { Route as DashboardPropertiesNewRouteImport } from './routes/dashboard.properties.new'
@@ -43,6 +45,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -57,6 +64,11 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => DashboardRoute,
+} as any)
+const BSubdomainIndexRoute = BSubdomainIndexRouteImport.update({
+  id: '/b/$subdomain/',
+  path: '/b/$subdomain/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardPropertiesIndexRoute =
   DashboardPropertiesIndexRouteImport.update({
@@ -95,11 +107,13 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/pricing': typeof PricingRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
+  '/b/$subdomain/': typeof BSubdomainIndexRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
@@ -109,11 +123,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/pricing': typeof PricingRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
+  '/b/$subdomain': typeof BSubdomainIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
@@ -125,11 +141,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/pricing': typeof PricingRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
+  '/b/$subdomain/': typeof BSubdomainIndexRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
@@ -142,11 +160,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/onboarding'
+    | '/pricing'
     | '/dashboard/leads'
     | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
+    | '/b/$subdomain/'
     | '/dashboard/properties/'
     | '/api/public/brochure/$id'
     | '/api/public/media/$'
@@ -156,11 +176,13 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/onboarding'
+    | '/pricing'
     | '/dashboard/leads'
     | '/dashboard/settings'
     | '/dashboard'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
+    | '/b/$subdomain'
     | '/dashboard/properties'
     | '/api/public/brochure/$id'
     | '/api/public/media/$'
@@ -171,11 +193,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/onboarding'
+    | '/pricing'
     | '/dashboard/leads'
     | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
+    | '/b/$subdomain/'
     | '/dashboard/properties/'
     | '/api/public/brochure/$id'
     | '/api/public/media/$'
@@ -187,6 +211,8 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
+  PricingRoute: typeof PricingRoute
+  BSubdomainIndexRoute: typeof BSubdomainIndexRoute
   ApiPublicBrochureIdRoute: typeof ApiPublicBrochureIdRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
   BSubdomainPSlugRoute: typeof BSubdomainPSlugRoute
@@ -222,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -242,6 +275,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/settings'
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/b/$subdomain/': {
+      id: '/b/$subdomain/'
+      path: '/b/$subdomain'
+      fullPath: '/b/$subdomain/'
+      preLoaderRoute: typeof BSubdomainIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/dashboard/properties/': {
       id: '/dashboard/properties/'
@@ -315,6 +355,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
+  PricingRoute: PricingRoute,
+  BSubdomainIndexRoute: BSubdomainIndexRoute,
   ApiPublicBrochureIdRoute: ApiPublicBrochureIdRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
   BSubdomainPSlugRoute: BSubdomainPSlugRoute,

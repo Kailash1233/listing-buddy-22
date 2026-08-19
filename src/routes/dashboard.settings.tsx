@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -15,19 +15,19 @@ export const Route = createFileRoute("/dashboard/settings")({
   head: () => ({
     meta: [
       { title: "Settings — Plotly" },
-      { name: "description", content: "Update your broker profile, WhatsApp number and public profile link." },
+      {
+        name: "description",
+        content: "Update your broker profile, WhatsApp number and public profile link.",
+      },
       { property: "og:title", content: "Settings — Plotly" },
-      { property: "og:description", content: "Update your broker profile, WhatsApp number and public profile link." },
+      {
+        property: "og:description",
+        content: "Update your broker profile, WhatsApp number and public profile link.",
+      },
     ],
   }),
   component: SettingsPage,
 });
-
-const PLANS = [
-  { id: "free", name: "Free", price: "₹0", limit: "3 listings", perks: ["Property pages", "WhatsApp share", "Lead inbox"] },
-  { id: "starter", name: "Starter", price: "₹499/mo", limit: "25 listings", perks: ["Everything in Free", "PDF brochures", "Listing analytics"] },
-  { id: "pro", name: "Pro", price: "₹999/mo", limit: "Unlimited listings", perks: ["Everything in Starter", "Priority AI copy", "Custom branding"] },
-];
 
 function SettingsPage() {
   const { data: broker } = useBroker();
@@ -64,7 +64,9 @@ function SettingsPage() {
       .eq("id", broker!.id);
     setSaving(false);
     if (error) {
-      toast.error(/duplicate|unique/i.test(error.message) ? "That profile link is taken." : error.message);
+      toast.error(
+        /duplicate|unique/i.test(error.message) ? "That profile link is taken." : error.message,
+      );
       return;
     }
     void qc.invalidateQueries({ queryKey: ["broker", broker!.id] });
@@ -90,18 +92,33 @@ function SettingsPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="wa">WhatsApp number</Label>
-            <Input id="wa" inputMode="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} />
+            <Input
+              id="wa"
+              inputMode="tel"
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="phone">Call number</Label>
-            <Input id="phone" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <Input
+              id="phone"
+              inputMode="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
           </div>
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="sub">Profile link</Label>
           <div className="flex items-center gap-1">
             <span className="text-sm text-muted-foreground">/b/</span>
-            <Input id="sub" value={sub} onChange={(e) => setSub(e.target.value)} onBlur={() => setSub(slugify(sub))} />
+            <Input
+              id="sub"
+              value={sub}
+              onChange={(e) => setSub(e.target.value)}
+              onBlur={() => setSub(slugify(sub))}
+            />
           </div>
           <p className="text-xs text-muted-foreground">
             Changing this breaks links you've already shared.
@@ -114,40 +131,32 @@ function SettingsPage() {
 
       <section className="space-y-4">
         <div className="flex items-center gap-3">
-          <h2 className="text-lg font-bold">Your plan</h2>
-          <Badge variant="secondary" className="uppercase">{broker.plan}</Badge>
+          <h2 className="text-lg font-bold">Listings & billing</h2>
+          <Badge variant="secondary" className="uppercase">
+            {broker.account_type === "agency" ? "Agency" : "Solo"}
+          </Badge>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {PLANS.map((p) => (
-            <div
-              key={p.id}
-              className={`surface space-y-3 p-4 ${p.id === broker.plan ? "border-primary" : ""}`}
-            >
-              <p className="font-semibold">{p.name}</p>
-              <p className="text-xl font-bold text-primary">{p.price}</p>
-              <p className="text-xs text-muted-foreground">{p.limit}</p>
-              <ul className="space-y-1 text-sm">
-                {p.perks.map((perk) => (
-                  <li key={perk} className="flex items-start gap-2">
-                    <Check className="mt-0.5 size-4 shrink-0 text-primary" /> {perk}
-                  </li>
-                ))}
-              </ul>
-              <Button
-                variant={p.id === broker.plan ? "secondary" : "outline"}
-                size="sm"
-                className="w-full"
-                disabled={p.id === broker.plan}
-                onClick={() => toast("Upgrades are coming soon — you'll be able to pay in-app.")}
-              >
-                {p.id === broker.plan ? "Current plan" : "Upgrade"}
-              </Button>
-            </div>
-          ))}
+        <div className="surface flex flex-wrap items-center justify-between gap-3 p-5">
+          <div>
+            <p className="font-semibold">
+              {broker.account_type === "agency"
+                ? "Listings come from your agency's shared monthly pool"
+                : `${broker.listing_credits_remaining ?? 0} listing credit${
+                    (broker.listing_credits_remaining ?? 0) === 1 ? "" : "s"
+                  } remaining`}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {broker.account_type === "agency"
+                ? "The pool resets at the start of each billing cycle."
+                : "One-time packs, credits never expire."}
+            </p>
+          </div>
+          <Button asChild size="sm">
+            <Link to="/pricing">
+              {broker.account_type === "agency" ? "View agency plans" : "Buy listing credits"}
+            </Link>
+          </Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          You're using {broker.property_limit === 999 ? "unlimited" : broker.property_limit} listing slots on this plan.
-        </p>
       </section>
     </div>
   );

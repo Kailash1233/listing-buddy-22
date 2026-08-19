@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.guard_property_publish() FROM PUBLIC, anon, authenticated;
