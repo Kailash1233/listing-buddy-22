@@ -14,11 +14,112 @@ export type Database = {
   }
   public: {
     Tables: {
-      brokers: {
+      agency_members: {
         Row: {
-          agency_name: string | null
+          agency_owner_id: string
           created_at: string
           id: string
+          invited_email: string
+          member_broker_id: string | null
+          role: Database["public"]["Enums"]["agency_seat_role"]
+          status: Database["public"]["Enums"]["member_status"]
+        }
+        Insert: {
+          agency_owner_id: string
+          created_at?: string
+          id?: string
+          invited_email: string
+          member_broker_id?: string | null
+          role?: Database["public"]["Enums"]["agency_seat_role"]
+          status?: Database["public"]["Enums"]["member_status"]
+        }
+        Update: {
+          agency_owner_id?: string
+          created_at?: string
+          id?: string
+          invited_email?: string
+          member_broker_id?: string | null
+          role?: Database["public"]["Enums"]["agency_seat_role"]
+          status?: Database["public"]["Enums"]["member_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agency_members_agency_owner_id_fkey"
+            columns: ["agency_owner_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agency_members_member_broker_id_fkey"
+            columns: ["member_broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agency_subscriptions: {
+        Row: {
+          agency_owner_id: string
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          listings_used_this_cycle: number
+          monthly_listing_pool: number
+          plan: Database["public"]["Enums"]["agency_plan"]
+          razorpay_subscription_id: string | null
+          status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string
+        }
+        Insert: {
+          agency_owner_id: string
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          listings_used_this_cycle?: number
+          monthly_listing_pool?: number
+          plan: Database["public"]["Enums"]["agency_plan"]
+          razorpay_subscription_id?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+        }
+        Update: {
+          agency_owner_id?: string
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          listings_used_this_cycle?: number
+          monthly_listing_pool?: number
+          plan?: Database["public"]["Enums"]["agency_plan"]
+          razorpay_subscription_id?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agency_subscriptions_agency_owner_id_fkey"
+            columns: ["agency_owner_id"]
+            isOneToOne: true
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brokers: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          agency_id: string | null
+          agency_name: string | null
+          agency_seat_role:
+            | Database["public"]["Enums"]["agency_seat_role"]
+            | null
+          created_at: string
+          id: string
+          listing_credits_remaining: number
           name: string
           phone: string
           plan: Database["public"]["Enums"]["broker_plan"]
@@ -28,9 +129,15 @@ export type Database = {
           whatsapp_number: string
         }
         Insert: {
+          account_type?: Database["public"]["Enums"]["account_type"]
+          agency_id?: string | null
           agency_name?: string | null
+          agency_seat_role?:
+            | Database["public"]["Enums"]["agency_seat_role"]
+            | null
           created_at?: string
           id: string
+          listing_credits_remaining?: number
           name?: string
           phone?: string
           plan?: Database["public"]["Enums"]["broker_plan"]
@@ -40,9 +147,15 @@ export type Database = {
           whatsapp_number?: string
         }
         Update: {
+          account_type?: Database["public"]["Enums"]["account_type"]
+          agency_id?: string | null
           agency_name?: string | null
+          agency_seat_role?:
+            | Database["public"]["Enums"]["agency_seat_role"]
+            | null
           created_at?: string
           id?: string
+          listing_credits_remaining?: number
           name?: string
           phone?: string
           plan?: Database["public"]["Enums"]["broker_plan"]
@@ -51,7 +164,114 @@ export type Database = {
           updated_at?: string
           whatsapp_number?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "brokers_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_ledger: {
+        Row: {
+          balance_after: number
+          broker_id: string
+          created_at: string
+          delta: number
+          id: string
+          property_id: string | null
+          purchase_id: string | null
+          reason: string
+        }
+        Insert: {
+          balance_after: number
+          broker_id: string
+          created_at?: string
+          delta: number
+          id?: string
+          property_id?: string | null
+          purchase_id?: string | null
+          reason: string
+        }
+        Update: {
+          balance_after?: number
+          broker_id?: string
+          created_at?: string
+          delta?: number
+          id?: string
+          property_id?: string | null
+          purchase_id?: string | null
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_ledger_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_ledger_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_ledger_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "credit_purchases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_purchases: {
+        Row: {
+          amount_paise: number
+          broker_id: string
+          created_at: string
+          credits_granted: number
+          id: string
+          pack_type: Database["public"]["Enums"]["credit_pack"]
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          status: Database["public"]["Enums"]["purchase_status"]
+        }
+        Insert: {
+          amount_paise?: number
+          broker_id: string
+          created_at?: string
+          credits_granted?: number
+          id?: string
+          pack_type: Database["public"]["Enums"]["credit_pack"]
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: Database["public"]["Enums"]["purchase_status"]
+        }
+        Update: {
+          amount_paise?: number
+          broker_id?: string
+          created_at?: string
+          credits_granted?: number
+          id?: string
+          pack_type?: Database["public"]["Enums"]["credit_pack"]
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: Database["public"]["Enums"]["purchase_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_purchases_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leads: {
         Row: {
@@ -112,6 +332,74 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          broker_id: string
+          created_at: string
+          id: string
+          is_read: boolean
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+        }
+        Insert: {
+          body?: string | null
+          broker_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+        }
+        Update: {
+          body?: string | null
+          broker_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "brokers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_webhook_events: {
+        Row: {
+          created_at: string
+          event_id: string
+          event_type: string
+          id: string
+          payload: Json
+          processed_at: string | null
+          provider: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          event_type: string
+          id?: string
+          payload?: Json
+          processed_at?: string | null
+          provider?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          event_type?: string
+          id?: string
+          payload?: Json
+          processed_at?: string | null
+          provider?: string
+        }
+        Relationships: []
       }
       properties: {
         Row: {
@@ -273,6 +561,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      publish_property: { Args: { _property_id: string }; Returns: Json }
       track_property_event: {
         Args: {
           _event_type: Database["public"]["Enums"]["event_type"]
@@ -282,13 +571,25 @@ export type Database = {
       }
     }
     Enums: {
+      account_type: "solo" | "agency"
+      agency_plan: "starter_agency" | "growth_agency"
+      agency_seat_role: "owner" | "member"
       broker_plan: "free" | "starter" | "pro"
+      credit_pack: "starter" | "launch"
       event_type: "view" | "whatsapp_click" | "call_click" | "enquiry_submit"
       lead_status: "new" | "contacted" | "site_visit" | "closed" | "lost"
       listing_type: "sale" | "rent"
+      member_status: "invited" | "active" | "removed"
+      notification_type:
+        | "new_lead"
+        | "low_credits"
+        | "payment_success"
+        | "agency_invite"
       property_status: "draft" | "active" | "sold" | "rented" | "inactive"
       property_type: "apartment" | "villa" | "plot" | "commercial"
+      purchase_status: "created" | "paid" | "failed"
       rera_status: "not_provided" | "provided_unverified"
+      subscription_status: "active" | "past_due" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -416,13 +717,26 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_type: ["solo", "agency"],
+      agency_plan: ["starter_agency", "growth_agency"],
+      agency_seat_role: ["owner", "member"],
       broker_plan: ["free", "starter", "pro"],
+      credit_pack: ["starter", "launch"],
       event_type: ["view", "whatsapp_click", "call_click", "enquiry_submit"],
       lead_status: ["new", "contacted", "site_visit", "closed", "lost"],
       listing_type: ["sale", "rent"],
+      member_status: ["invited", "active", "removed"],
+      notification_type: [
+        "new_lead",
+        "low_credits",
+        "payment_success",
+        "agency_invite",
+      ],
       property_status: ["draft", "active", "sold", "rented", "inactive"],
       property_type: ["apartment", "villa", "plot", "commercial"],
+      purchase_status: ["created", "paid", "failed"],
       rera_status: ["not_provided", "provided_unverified"],
+      subscription_status: ["active", "past_due", "cancelled"],
     },
   },
 } as const
