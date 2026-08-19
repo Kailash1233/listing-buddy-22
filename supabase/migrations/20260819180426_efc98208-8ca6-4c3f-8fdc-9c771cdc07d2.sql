@@ -1,0 +1,1 @@
+ALTER TABLE public.brokers ADD COLUMN IF NOT EXISTS bio text, ADD COLUMN IF NOT EXISTS photo_url text;
