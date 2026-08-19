@@ -3,7 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/api/public/brochure/$id")({
   server: {
     handlers: {
-      GET: async ({ params }) => {
+      GET: async ({ params, request }) => {
+        const download = new URL(request.url).searchParams.has("dl");
         const { buildBrochure } = await import("@/lib/brochure.server");
         try {
           const pdf = await buildBrochure(params.id);
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/api/public/brochure/$id")({
           return new Response(pdf.bytes as BodyInit, {
             headers: {
               "content-type": "application/pdf",
-              "content-disposition": `inline; filename="${pdf.filename}"`,
+              "content-disposition": `${download ? "attachment" : "inline"}; filename="${pdf.filename}"`,
               "cache-control": "public, max-age=300",
             },
           });

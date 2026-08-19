@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Eye, MessageCircle, Pencil, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Property } from "@/hooks/useBroker";
-import { formatINR, mediaUrl, photoPaths, propertyPath } from "@/lib/property";
+import { formatINR, thumbUrl, photoPaths, propertyPath } from "@/lib/property";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -22,7 +22,7 @@ export function PropertyCard({ property, subdomain }: { property: Property; subd
     <article className="surface overflow-hidden">
       <div className="relative aspect-[4/3] bg-muted">
         {cover ? (
-          <img src={mediaUrl(cover)} alt={property.title} className="size-full object-cover" loading="lazy" />
+          <img src={thumbUrl(cover)} alt={property.title} className="size-full object-cover" loading="lazy" />
         ) : (
           <div className="grid size-full place-items-center text-sm text-muted-foreground">No photo</div>
         )}

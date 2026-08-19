@@ -2,22 +2,16 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
-  BedDouble,
-  Building2,
-  Compass,
-  Download,
   Loader2,
   MapPin,
   MessageCircle,
   Phone,
-  Ruler,
   ShieldCheck,
-  Layers,
-  Car,
 } from "lucide-react";
 import { getPublicListing, submitLead, trackPublicEvent } from "@/lib/public-listing.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
-import { formatINR, mediaUrl, photoPaths, waLink } from "@/lib/property";
+import { formatINR, mediaUrl, thumbUrl, photoPaths, waLink } from "@/lib/property";
+import { BrochureButton } from "@/components/BrochureButton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -86,17 +80,20 @@ function PublicProperty() {
     void trackPublicEvent({ data: { propertyId: property.id, eventType: "view" } });
   }, [property.id]);
 
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  // Set after hydration so SSR and client markup match.
+  const [shareUrl, setShareUrl] = useState("");
+  useEffect(() => setShareUrl(window.location.href), []);
   const waMessage = `${property.whatsapp_message || property.title}\n\n${shareUrl}`;
 
-  const specs = [
-    property.bhk != null && { icon: BedDouble, label: `${property.bhk} BHK` },
-    property.area_sqft != null && { icon: Ruler, label: `${property.area_sqft} sqft` },
-    property.facing && { icon: Compass, label: `${property.facing} facing` },
-    property.floor && { icon: Layers, label: `Floor ${property.floor}` },
-    property.parking && { icon: Car, label: property.parking },
-    { icon: Building2, label: property.property_type },
-  ].filter(Boolean) as Array<{ icon: typeof BedDouble; label: string }>;
+  const facts = [
+    property.bhk != null && { label: "Configuration", value: `${property.bhk} BHK` },
+    property.area_sqft != null && { label: "Built-up area", value: `${property.area_sqft} sqft` },
+    property.facing && { label: "Facing", value: property.facing },
+    property.floor && { label: "Floor", value: property.floor },
+    property.parking && { label: "Parking", value: property.parking },
+    { label: "Property type", value: property.property_type },
+    { label: "Listed for", value: property.listing_type === "rent" ? "Rent" : "Sale" },
+  ].filter(Boolean) as Array<{ label: string; value: string }>;
 
   const track = (t: "whatsapp_click" | "call_click") =>
     void trackPublicEvent({ data: { propertyId: property.id, eventType: t } });
@@ -136,7 +133,7 @@ function PublicProperty() {
                     }`}
                     aria-label={`Photo ${i + 1}`}
                   >
-                    <img src={mediaUrl(p)} alt="" className="size-full object-cover" loading="lazy" />
+                    <img src={thumbUrl(p)} alt="" className="size-full object-cover" loading="lazy" />
                   </button>
                 ))}
               </div>
@@ -159,11 +156,11 @@ function PublicProperty() {
           </p>
         </section>
 
-        <section className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {specs.map((s) => (
-            <div key={s.label} className="surface flex items-center gap-2 p-3 text-sm capitalize">
-              <s.icon className="size-4 text-primary" />
-              {s.label}
+        <section className="mt-6 grid grid-cols-2 overflow-hidden rounded-2xl border border-border bg-card sm:grid-cols-4">
+          {facts.map((f) => (
+            <div key={f.label} className="border-b border-r border-border p-4">
+              <p className="eyebrow text-muted-foreground">{f.label}</p>
+              <p className="mt-1 text-base font-bold capitalize">{f.value}</p>
             </div>
           ))}
         </section>
@@ -205,7 +202,17 @@ function PublicProperty() {
         {property.address_text && (
           <section className="mt-8">
             <h2 className="text-lg font-bold">Location</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{property.address_text}</p>
+            <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-card">
+              {property.lat != null && property.lng != null && (
+                <iframe
+                  title="Map"
+                  loading="lazy"
+                  className="h-56 w-full border-0"
+                  src={`https://www.google.com/maps?q=${property.lat},${property.lng}&z=15&output=embed`}
+                />
+              )}
+              <p className="p-4 text-sm text-muted-foreground">{property.address_text}</p>
+            </div>
             {property.lat != null && property.lng != null && (
               <Button asChild variant="outline" size="sm" className="mt-3">
                 <a
@@ -220,29 +227,37 @@ function PublicProperty() {
           </section>
         )}
 
-        <section className="surface mt-8 flex items-center gap-4 p-4">
-          <div className="grid size-12 shrink-0 place-items-center rounded-full bg-primary/10 text-lg font-bold text-primary">
-            {broker.name.charAt(0).toUpperCase()}
+        <section className="mt-8 rounded-2xl border border-border bg-card p-5">
+          <p className="eyebrow text-muted-foreground">Contact agent</p>
+          <div className="mt-3 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4">
+            <div className="grid size-14 shrink-0 place-items-center rounded-full bg-primary/10 text-xl font-bold text-primary">
+              {broker.name.charAt(0).toUpperCase()}
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-lg font-bold">{broker.name}</p>
+              <p className="truncate text-sm text-muted-foreground">
+                {broker.agency_name || "Independent broker"}
+              </p>
+            </div>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-semibold">{broker.name}</p>
-            <p className="text-sm text-muted-foreground">{broker.agency_name || "Independent broker"}</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <Button asChild onClick={() => track("whatsapp_click")}>
+              <a href={waLink(broker.whatsapp_number, waMessage)} target="_blank" rel="noreferrer">
+                <MessageCircle className="size-4" /> WhatsApp
+              </a>
+            </Button>
+            <Button asChild variant="outline" onClick={() => track("call_click")}>
+              <a href={`tel:${broker.phone || broker.whatsapp_number}`}>
+                <Phone className="size-4" /> Call
+              </a>
+            </Button>
           </div>
-          <Button asChild size="sm" variant="outline" onClick={() => track("call_click")}>
-            <a href={`tel:${broker.phone || broker.whatsapp_number}`}>
-              <Phone className="size-4" /> Call
-            </a>
-          </Button>
         </section>
 
         <LeadForm property={property} />
 
-        <section className="mt-6 flex flex-wrap gap-2">
-          <Button asChild variant="outline" size="sm">
-            <a href={`/api/public/brochure/${property.id}`} target="_blank" rel="noreferrer">
-              <Download className="size-4" /> Download brochure
-            </a>
-          </Button>
+        <section className="mt-6">
+          <BrochureButton propertyId={property.id} slug={property.slug} />
         </section>
 
         <p className="mt-8 text-xs leading-relaxed text-muted-foreground">

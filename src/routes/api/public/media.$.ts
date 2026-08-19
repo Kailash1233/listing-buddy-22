@@ -8,8 +8,13 @@ export const Route = createFileRoute("/api/public/media/$")({
         if (!path || path.includes("..")) return new Response("Not found", { status: 404 });
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data, error } = await supabaseAdmin.storage.from("property-media").download(path);
-        if (error || !data) return new Response("Not found", { status: 404 });
+        const bucket = supabaseAdmin.storage.from("property-media");
+        let { data } = await bucket.download(path);
+        if (!data && path.endsWith(".thumb.jpg")) {
+          // Older uploads have no generated thumbnail — serve the original.
+          ({ data } = await bucket.download(path.slice(0, -".thumb.jpg".length)));
+        }
+        if (!data) return new Response("Not found", { status: 404 });
 
         return new Response(await data.arrayBuffer(), {
           headers: {

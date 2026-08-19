@@ -41,6 +41,14 @@ export async function buildBrochure(propertyId: string) {
 
   if (!property || !["active", "sold", "rented"].includes(property.status)) return null;
 
+  const filename = `${property.slug || "property"}.pdf`;
+  // Cached per property revision: editing the listing bumps updated_at and busts the key.
+  const cacheKey = `brochures/${property.id}/${Date.parse(property.updated_at ?? "") || 0}.pdf`;
+  const cached = await supabaseAdmin.storage.from("property-media").download(cacheKey);
+  if (cached.data) {
+    return { bytes: new Uint8Array(await cached.data.arrayBuffer()), filename };
+  }
+
   const broker = (property.brokers ?? {}) as {
     name?: string;
     agency_name?: string | null;
@@ -164,8 +172,12 @@ export async function buildBrochure(propertyId: string) {
     { x: 40, y: 22, size: 8, font, color: GREY },
   );
 
-  return {
-    bytes: await pdf.save(),
-    filename: `${property.slug || "property"}.pdf`,
-  };
+  const bytes = await pdf.save();
+
+  await supabaseAdmin.storage
+    .from("property-media")
+    .upload(cacheKey, bytes, { contentType: "application/pdf", upsert: true })
+    .catch(() => null);
+
+  return { bytes, filename };
 }
