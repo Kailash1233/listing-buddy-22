@@ -62,14 +62,14 @@ export function BrochureButton({
       setState("error");
     }
   }
-
-
   if (state === "error") {
     return (
       <div className={className}>
         <p className="mb-2 flex items-center gap-1.5 text-xs text-destructive">
-          <AlertTriangle className="size-3.5" /> Brochure couldn&apos;t be generated.
+          <AlertTriangle className="size-3.5" /> Brochure couldn&apos;t be generated.{" "}
+          {detail || "Please try again."}
         </p>
+
         <Button variant={variant} size={size} onClick={download}>
           <RotateCw className="size-4" /> Retry download
         </Button>
