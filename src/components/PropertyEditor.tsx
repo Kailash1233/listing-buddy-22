@@ -34,6 +34,7 @@ const PUBLISH_ERRORS: Record<string, string> = {
 type Draft = {
   title: string;
   description: string;
+  broker_note: string;
   whatsapp_message: string;
   meta_description: string;
   property_type: "apartment" | "villa" | "plot" | "commercial";
@@ -59,6 +60,7 @@ function emptyDraft(): Draft {
   return {
     title: "",
     description: "",
+    broker_note: "",
     whatsapp_message: "",
     meta_description: "",
     property_type: "apartment",
@@ -85,6 +87,7 @@ function fromProperty(p: Property): Draft {
   return {
     title: p.title ?? "",
     description: p.description ?? "",
+    broker_note: p.broker_note ?? "",
     whatsapp_message: p.whatsapp_message ?? "",
     meta_description: p.meta_description ?? "",
     property_type: p.property_type,
@@ -221,6 +224,7 @@ export function PropertyEditor({
         broker_id: broker.id,
         title: draft.title.trim(),
         description: draft.description || null,
+        broker_note: draft.broker_note || null,
         whatsapp_message: draft.whatsapp_message || null,
         meta_description: draft.meta_description || null,
         property_type: draft.property_type,
@@ -492,6 +496,20 @@ export function PropertyEditor({
           onChange={(e) => set("description", e.target.value)}
           placeholder="Describe the property for buyers…"
         />
+        <div className="space-y-1.5">
+          <Label htmlFor="broker-note">Your note to buyers (optional)</Label>
+          <Textarea
+            id="broker-note"
+            rows={3}
+            maxLength={400}
+            value={draft.broker_note}
+            onChange={(e) => set("broker_note", e.target.value)}
+            placeholder="Owner is relocating, negotiable. Site visits on weekends."
+          />
+          <p className="text-xs text-muted-foreground">
+            Shown near the top of the public listing, above the description.
+          </p>
+        </div>
         <div className="space-y-1.5">
           <Label htmlFor="wa">WhatsApp share message</Label>
           <Textarea
