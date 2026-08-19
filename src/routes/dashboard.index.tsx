@@ -2,9 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   Building2,
-  ExternalLink,
   Eye,
-  Globe,
   Inbox,
   MessageCircle,
   Plus,
@@ -16,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Badge } from "@/components/ui/badge";
+import { AgentPageCard } from "@/components/AgentPageCard";
 
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({
@@ -94,23 +93,13 @@ function DashboardHome() {
       {broker ? <CreditsBanner broker={broker} /> : null}
 
       {broker ? (
-        <div className="surface flex flex-wrap items-center justify-between gap-3 p-5">
-          <div className="flex items-start gap-3">
-            <Globe className="mt-0.5 size-5 text-primary" />
-            <div>
-              <p className="font-semibold">Your website is live</p>
-              <p className="text-sm text-muted-foreground">
-                All your published listings on one shareable page.
-              </p>
-            </div>
-          </div>
-          <Button asChild variant="outline" size="sm">
-            <Link to="/b/$subdomain" params={{ subdomain: broker.subdomain_slug }} target="_blank">
-              Visit page <ExternalLink className="size-4" />
-            </Link>
-          </Button>
-        </div>
+        <AgentPageCard
+          slug={broker.subdomain_slug}
+          hasLive={list.some((p) => p.status === "active")}
+          hasBio={!!broker.bio?.trim()}
+        />
       ) : null}
+
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((s) => (

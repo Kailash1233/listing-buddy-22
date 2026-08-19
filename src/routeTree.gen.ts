@@ -18,6 +18,7 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
 import { Route as DashboardTeamRouteImport } from './routes/dashboard.team'
+import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as BSubdomainIndexRouteImport } from './routes/b.$subdomain.index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard.properties.index'
 import { Route as DashboardPropertiesIdRouteImport } from './routes/dashboard.properties.$id'
@@ -71,6 +72,11 @@ const DashboardTeamRoute = DashboardTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => DashboardRoute,
 } as any)
+const PSlugRoute = PSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BSubdomainIndexRoute = BSubdomainIndexRouteImport.update({
   id: '/b/$subdomain/',
   path: '/b/$subdomain/',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/team': typeof DashboardTeamRoute
+  '/p/$slug': typeof PSlugRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/team': typeof DashboardTeamRoute
+  '/p/$slug': typeof PSlugRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/team': typeof DashboardTeamRoute
+  '/p/$slug': typeof PSlugRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/dashboard/leads'
     | '/dashboard/settings'
     | '/dashboard/team'
+    | '/p/$slug'
     | '/dashboard/'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/dashboard/leads'
     | '/dashboard/settings'
     | '/dashboard/team'
+    | '/p/$slug'
     | '/dashboard'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/dashboard/leads'
     | '/dashboard/settings'
     | '/dashboard/team'
+    | '/p/$slug'
     | '/dashboard/'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
@@ -224,6 +236,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
   PricingRoute: typeof PricingRoute
+  PSlugRoute: typeof PSlugRoute
   BSubdomainIndexRoute: typeof BSubdomainIndexRoute
   ApiPublicBrochureIdRoute: typeof ApiPublicBrochureIdRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
@@ -294,6 +307,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/team'
       preLoaderRoute: typeof DashboardTeamRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/p/$slug': {
+      id: '/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/p/$slug'
+      preLoaderRoute: typeof PSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/b/$subdomain/': {
       id: '/b/$subdomain/'
@@ -377,6 +397,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
   PricingRoute: PricingRoute,
+  PSlugRoute: PSlugRoute,
   BSubdomainIndexRoute: BSubdomainIndexRoute,
   ApiPublicBrochureIdRoute: ApiPublicBrochureIdRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,

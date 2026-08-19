@@ -2,14 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBroker } from "@/hooks/useBroker";
 import { slugify } from "@/lib/property";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { PhotoUploader } from "@/components/PhotoUploader";
 import { Badge } from "@/components/ui/badge";
+
 
 export const Route = createFileRoute("/dashboard/settings")({
   head: () => ({
@@ -37,6 +40,8 @@ function SettingsPage() {
   const [whatsapp, setWhatsapp] = useState("");
   const [phone, setPhone] = useState("");
   const [sub, setSub] = useState("");
+  const [bio, setBio] = useState("");
+  const [photo, setPhoto] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -46,6 +51,8 @@ function SettingsPage() {
     setWhatsapp(broker.whatsapp_number ?? "");
     setPhone(broker.phone ?? "");
     setSub(broker.subdomain_slug ?? "");
+    setBio(broker.bio ?? "");
+    setPhoto(broker.photo_url ? [broker.photo_url] : []);
   }, [broker]);
 
   if (!broker) return null;
@@ -60,8 +67,11 @@ function SettingsPage() {
         whatsapp_number: whatsapp.replace(/\D/g, ""),
         phone: phone.replace(/\D/g, ""),
         subdomain_slug: slugify(sub),
+        bio: bio.trim() || null,
+        photo_url: photo[0] ?? null,
       })
       .eq("id", broker!.id);
+
     setSaving(false);
     if (error) {
       toast.error(
@@ -89,6 +99,29 @@ function SettingsPage() {
           <Label htmlFor="agency">Agency</Label>
           <Input id="agency" value={agency} onChange={(e) => setAgency(e.target.value)} />
         </div>
+        <PhotoUploader
+          userId={broker.id}
+          paths={photo}
+          onChange={setPhoto}
+          single
+          max={1}
+          label="Profile photo"
+        />
+        <div className="space-y-1.5">
+          <Label htmlFor="bio">Short bio</Label>
+          <Textarea
+            id="bio"
+            rows={4}
+            maxLength={600}
+            placeholder="A few sentences about you — areas you cover, years of experience, what buyers can expect."
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            Shown on your public agent page. {600 - bio.length} characters left.
+          </p>
+        </div>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="wa">WhatsApp number</Label>
@@ -112,7 +145,7 @@ function SettingsPage() {
         <div className="space-y-1.5">
           <Label htmlFor="sub">Profile link</Label>
           <div className="flex items-center gap-1">
-            <span className="text-sm text-muted-foreground">/b/</span>
+            <span className="text-sm text-muted-foreground">/p/</span>
             <Input
               id="sub"
               value={sub}

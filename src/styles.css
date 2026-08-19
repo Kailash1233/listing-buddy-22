@@ -5,9 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system: bright proptech. Off-white canvas, indigo primary (#6D46E8),
- * warm amber reserved for "new lead" signals. Manrope typography.
+ * Design system: bright proptech. Off-white canvas, brand blue (#0F1A63)
+ * as the single primary, warm peach for accents. Manrope typography.
  */
+
 
 @theme inline {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
@@ -69,39 +70,40 @@
   --card-foreground: oklch(0.208 0.04 265.8);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.208 0.04 265.8);
-  --primary: oklch(0.537 0.229 287);
-  --primary-foreground: oklch(0.99 0.005 180);
-  --secondary: oklch(0.962 0.012 290);
-  --secondary-foreground: oklch(0.35 0.12 287);
+  --primary: oklch(0.269 0.128 268.6);
+  --primary-foreground: oklch(0.99 0.005 270);
+  --secondary: oklch(0.958 0.016 272);
+  --secondary-foreground: oklch(0.269 0.128 268.6);
   --muted: oklch(0.965 0.004 285);
   --muted-foreground: oklch(0.446 0.037 257.3);
-  --accent: oklch(0.944 0.027 297.3);
-  --accent-foreground: oklch(0.465 0.206 286.3);
+  --accent: oklch(0.94 0.028 272);
+  --accent-foreground: oklch(0.269 0.128 268.6);
   --warm: oklch(0.769 0.165 70.1);
   --warm-foreground: oklch(0.32 0.09 60);
   --destructive: oklch(0.58 0.21 25);
   --destructive-foreground: oklch(0.99 0.003 250);
   --border: oklch(0.925 0.006 285);
   --input: oklch(0.925 0.006 285);
-  --ring: oklch(0.537 0.229 287);
-  --chart-1: oklch(0.537 0.229 287);
-  --chart-2: oklch(0.465 0.206 286.3);
+  --ring: oklch(0.269 0.128 268.6);
+  --chart-1: oklch(0.269 0.128 268.6);
+  --chart-2: oklch(0.346 0.159 268.5);
   --chart-3: oklch(0.769 0.165 70.1);
   --chart-4: oklch(0.6 0.09 240);
   --chart-5: oklch(0.596 0.127 163.2);
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.208 0.04 265.8);
-  --sidebar-primary: oklch(0.537 0.229 287);
-  --sidebar-primary-foreground: oklch(0.99 0.005 180);
-  --sidebar-accent: oklch(0.944 0.027 297.3);
-  --sidebar-accent-foreground: oklch(0.465 0.206 286.3);
+  --sidebar-primary: oklch(0.269 0.128 268.6);
+  --sidebar-primary-foreground: oklch(0.99 0.005 270);
+  --sidebar-accent: oklch(0.94 0.028 272);
+  --sidebar-accent-foreground: oklch(0.269 0.128 268.6);
   --sidebar-border: oklch(0.925 0.006 285);
-  --sidebar-ring: oklch(0.537 0.229 287);
-  --navy: #111533;
-  --navy-deep: #0b0e24;
-  --navy-foreground: #eef0ff;
+  --sidebar-ring: oklch(0.269 0.128 268.6);
+  --navy: #0f1a63;
+  --navy-deep: #0a1244;
+  --navy-foreground: #eef1ff;
   --peach: #fce7d8;
   --peach-foreground: #4a2a15;
+
 }
 
 @layer base {
@@ -133,10 +135,10 @@
 @utility hero-gradient {
   background-image: radial-gradient(
       120% 90% at 100% 0%,
-      oklch(0.92 0.06 292 / 0.9) 0%,
+      oklch(0.9 0.06 272 / 0.75) 0%,
       transparent 60%
     ),
-    radial-gradient(90% 80% at 0% 10%, oklch(0.95 0.035 275 / 0.8) 0%, transparent 55%);
+    radial-gradient(90% 80% at 0% 10%, oklch(0.94 0.04 268 / 0.8) 0%, transparent 55%);
 }
 
 @utility no-scrollbar {
@@ -152,13 +154,14 @@
 }
 
 @utility navy-gradient {
-  background-image: linear-gradient(140deg, var(--navy-deep) 0%, var(--navy) 45%, #1e2158 100%);
+  background-image: linear-gradient(140deg, var(--navy-deep) 0%, var(--navy) 55%, #1a2a8a 100%);
   color: var(--navy-foreground);
 }
 
 @utility stage-gradient {
-  background-image: radial-gradient(60% 60% at 50% 45%, rgba(99, 102, 241, 0.35) 0%, transparent 70%);
+  background-image: radial-gradient(60% 60% at 50% 45%, rgba(52, 74, 190, 0.4) 0%, transparent 70%);
 }
+
 
 @utility eyebrow {
   font-size: 0.6875rem;

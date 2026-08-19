@@ -120,11 +120,13 @@ export type Database = {
           agency_seat_role:
             | Database["public"]["Enums"]["agency_seat_role"]
             | null
+          bio: string | null
           created_at: string
           id: string
           listing_credits_remaining: number
           name: string
           phone: string
+          photo_url: string | null
           subdomain_slug: string
           updated_at: string
           whatsapp_number: string
@@ -136,11 +138,13 @@ export type Database = {
           agency_seat_role?:
             | Database["public"]["Enums"]["agency_seat_role"]
             | null
+          bio?: string | null
           created_at?: string
           id: string
           listing_credits_remaining?: number
           name?: string
           phone?: string
+          photo_url?: string | null
           subdomain_slug: string
           updated_at?: string
           whatsapp_number?: string
@@ -152,11 +156,13 @@ export type Database = {
           agency_seat_role?:
             | Database["public"]["Enums"]["agency_seat_role"]
             | null
+          bio?: string | null
           created_at?: string
           id?: string
           listing_credits_remaining?: number
           name?: string
           phone?: string
+          photo_url?: string | null
           subdomain_slug?: string
           updated_at?: string
           whatsapp_number?: string
