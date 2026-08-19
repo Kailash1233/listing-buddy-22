@@ -5,9 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system: bright proptech. Off-white canvas, indigo primary (#6D46E8),
- * warm amber reserved for "new lead" signals. Manrope typography.
+ * Design system: bright proptech. Off-white canvas, brand blue (#0F1A63)
+ * as the single primary, warm peach for accents. Manrope typography.
  */
+
 
 @theme inline {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
