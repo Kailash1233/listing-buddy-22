@@ -179,36 +179,52 @@ function Landing() {
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:py-24">
         <h2 className="text-3xl font-bold md:text-4xl">Simple pricing</h2>
-        <p className="mt-2 text-muted-foreground">Billing coming soon — every plan is free while we're in early access.</p>
+        <p className="mt-2 text-muted-foreground">
+          Start with 2 free listings. After that, buy one-time listing packs — no subscription, and
+          credits never expire. Agencies get a shared monthly pool.
+        </p>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {plans.map((p) => (
+          {[SOLO_PACKS.free, SOLO_PACKS.starter, SOLO_PACKS.launch].map((pack) => (
             <div
-              key={p.name}
-              className={`surface p-6 ${p.featured ? "ring-2 ring-primary" : ""}`}
+              key={pack.id}
+              className={`surface p-6 ${pack.id === "launch" ? "ring-2 ring-primary" : ""}`}
             >
-              {p.featured && <Badge className="mb-3">Most popular</Badge>}
-              <h3 className="text-lg font-bold">{p.name}</h3>
-              <p className="mt-2 text-3xl font-extrabold">
-                {p.price}
-                <span className="text-sm font-medium text-muted-foreground"> / month</span>
+              {pack.id === "launch" && <Badge className="mb-3">Best value</Badge>}
+              <h3 className="text-lg font-bold">{pack.name}</h3>
+              <p className="mt-2 flex items-baseline gap-2 text-3xl font-extrabold">
+                {rupees(pack.amountPaise)}
+                {pack.compareAtPaise && isOfferLive(pack) ? (
+                  <span className="text-sm font-medium text-muted-foreground line-through">
+                    {rupees(pack.compareAtPaise)}
+                  </span>
+                ) : null}
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">{p.note}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {pack.credits} listings · {pack.perListingLabel}
+              </p>
               <ul className="mt-5 space-y-2 text-sm">
-                {p.perks.map((perk) => (
-                  <li key={perk} className="flex items-center gap-2">
-                    <Check className="size-4 text-primary" /> {perk}
-                  </li>
-                ))}
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-primary" /> {pack.note}
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-primary" /> AI Quick Add + PDF brochure
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="size-4 text-primary" /> WhatsApp-ready share copy
+                </li>
               </ul>
-              <Button asChild className="mt-6 w-full" variant={p.featured ? "default" : "outline"}>
-                <Link to="/auth" search={{ mode: "signup" }}>
-                  Start free
-                </Link>
+              <Button
+                asChild
+                className="mt-6 w-full"
+                variant={pack.id === "launch" ? "default" : "outline"}
+              >
+                <Link to="/pricing">{pack.purchasable ? "See pack details" : "Start free"}</Link>
               </Button>
             </div>
           ))}
         </div>
       </section>
+
 
       <footer className="border-t border-border py-10 text-center text-sm text-muted-foreground">
         Plotly · Property microsites for brokers · Chennai
