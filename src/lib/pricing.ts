@@ -52,7 +52,6 @@ export const SOLO_PACKS: Record<SoloPackId, SoloPack> = {
     perListingLabel: "₹30 / listing",
     note: "One-time purchase. Credits added instantly.",
     purchasable: true,
-    razorpayItemId: undefined,
   },
   launch: {
     id: "launch",
@@ -64,7 +63,6 @@ export const SOLO_PACKS: Record<SoloPackId, SoloPack> = {
     note: "Limited-time launch pricing.",
     purchasable: true,
     offerEndsAt: "2026-12-31",
-    razorpayItemId: undefined,
   },
 };
 
@@ -77,7 +75,6 @@ export const AGENCY_PLANS: Record<AgencyPlanId, AgencyPlan> = {
     seats: 3,
     note: "Shared pool resets each billing cycle.",
     selfServe: true,
-    razorpayPlanId: undefined,
   },
   growth_agency: {
     id: "growth_agency",
@@ -87,7 +84,6 @@ export const AGENCY_PLANS: Record<AgencyPlanId, AgencyPlan> = {
     seats: 8,
     note: "Shared pool resets each billing cycle.",
     selfServe: true,
-    razorpayPlanId: undefined,
   },
   enterprise: {
     id: "enterprise",
