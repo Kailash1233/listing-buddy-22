@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -7,11 +7,14 @@ import {
   MessageCircle,
   Phone,
   ShieldCheck,
+  ArrowRight,
 } from "lucide-react";
 import { getPublicListing, submitLead, trackPublicEvent } from "@/lib/public-listing.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
 import { formatINR, mediaUrl, thumbUrl, photoPaths, waLink } from "@/lib/property";
 import { BrochureButton } from "@/components/BrochureButton";
+import { BrokerAvatar } from "@/components/BrokerAvatar";
+import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -27,6 +30,7 @@ export const Route = createFileRoute("/b/$subdomain/p/$slug")({
     return {
       broker: result.broker as unknown as Broker,
       property: result.property as Property,
+      activeCount: result.activeCount,
     };
   },
 
@@ -72,7 +76,7 @@ export const Route = createFileRoute("/b/$subdomain/p/$slug")({
 });
 
 function PublicProperty() {
-  const { broker, property } = Route.useLoaderData();
+  const { broker, property, activeCount } = Route.useLoaderData();
   const photos = photoPaths(property.photos);
   const [active, setActive] = useState(0);
 
@@ -165,12 +169,19 @@ function PublicProperty() {
           ))}
         </section>
 
+        {property.broker_note && (
+          <section className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+            <p className="eyebrow text-primary">Note from {broker.name.split(" ")[0]}</p>
+            <p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed">
+              {property.broker_note}
+            </p>
+          </section>
+        )}
+
         {property.description && (
           <section className="mt-8">
             <h2 className="text-lg font-bold">About this property</h2>
-            <p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-muted-foreground">
-              {property.description}
-            </p>
+            <Expandable text={property.description} />
           </section>
         )}
 
@@ -228,6 +239,28 @@ function PublicProperty() {
         )}
 
         <section className="mt-8 rounded-2xl border border-border bg-card p-5">
+          <div className="flex items-center gap-4">
+            <BrokerAvatar name={broker.name} photoUrl={broker.photo_url} className="size-12" />
+            <div className="min-w-0">
+              <p className="truncate font-bold">{broker.name}</p>
+              <p className="truncate text-sm text-muted-foreground">
+                {broker.agency_name ? `${broker.agency_name} · ` : ""}Property agent
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {activeCount} active listing{activeCount === 1 ? "" : "s"}
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/p/$slug"
+            params={{ slug: broker.subdomain_slug }}
+            className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+          >
+            View {broker.name.split(" ")[0]}'s profile <ArrowRight className="size-4" />
+          </Link>
+        </section>
+
+        <section className="mt-4 rounded-2xl border border-border bg-card p-5">
           <p className="eyebrow text-muted-foreground">Contact agent</p>
           <div className="mt-3 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4">
             <div className="grid size-14 shrink-0 place-items-center rounded-full bg-primary/10 text-xl font-bold text-primary">
@@ -267,6 +300,8 @@ function PublicProperty() {
           Listing details are provided by {broker.name} and are not verified by this platform. Please verify
           documents before any transaction.
         </p>
+
+        <PoweredByAdszoo />
       </main>
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 p-3 backdrop-blur">
@@ -384,5 +419,30 @@ function LeadForm({ property }: { property: Property }) {
         {sending && <Loader2 className="size-4 animate-spin" />} Send enquiry
       </Button>
     </section>
+  );
+}
+
+function Expandable({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  const long = text.length > 420;
+  return (
+    <div>
+      <p
+        className={`mt-2 whitespace-pre-line text-[15px] leading-relaxed text-muted-foreground ${
+          long && !open ? "line-clamp-6" : ""
+        }`}
+      >
+        {text}
+      </p>
+      {long && (
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="mt-2 text-sm font-semibold text-primary hover:underline"
+        >
+          {open ? "Show less" : "Show more"}
+        </button>
+      )}
+    </div>
   );
 }
