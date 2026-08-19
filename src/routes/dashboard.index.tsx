@@ -94,23 +94,13 @@ function DashboardHome() {
       {broker ? <CreditsBanner broker={broker} /> : null}
 
       {broker ? (
-        <div className="surface flex flex-wrap items-center justify-between gap-3 p-5">
-          <div className="flex items-start gap-3">
-            <Globe className="mt-0.5 size-5 text-primary" />
-            <div>
-              <p className="font-semibold">Your website is live</p>
-              <p className="text-sm text-muted-foreground">
-                All your published listings on one shareable page.
-              </p>
-            </div>
-          </div>
-          <Button asChild variant="outline" size="sm">
-            <Link to="/b/$subdomain" params={{ subdomain: broker.subdomain_slug }} target="_blank">
-              Visit page <ExternalLink className="size-4" />
-            </Link>
-          </Button>
-        </div>
+        <AgentPageCard
+          slug={broker.subdomain_slug}
+          hasLive={list.some((p) => p.status === "active")}
+          hasBio={!!broker.bio?.trim()}
+        />
       ) : null}
+
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((s) => (
