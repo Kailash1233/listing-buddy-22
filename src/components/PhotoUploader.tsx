@@ -2,8 +2,21 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { mediaUrl } from "@/lib/property";
+import { thumbUrl } from "@/lib/property";
 import { Button } from "@/components/ui/button";
+
+async function makeThumb(file: File, width = 400): Promise<Blob | null> {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, width / bitmap.width);
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  return new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/jpeg", 0.8));
+}
 
 export function PhotoUploader({
   userId,
@@ -44,6 +57,14 @@ export function PhotoUploader({
         continue;
       }
       next.push(path);
+
+      // Write a 400px thumbnail next to the original so grids never load full-res photos.
+      const thumb = await makeThumb(file).catch(() => null);
+      if (thumb) {
+        await supabase.storage
+          .from("property-media")
+          .upload(`${path}.thumb.jpg`, thumb, { contentType: "image/jpeg", upsert: true });
+      }
     }
     setBusy(false);
     onChange(single ? next.slice(0, 1) : [...paths, ...next]);
@@ -55,7 +76,7 @@ export function PhotoUploader({
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
         {paths.map((p) => (
           <div key={p} className="group relative aspect-square overflow-hidden rounded-xl border border-border">
-            <img src={mediaUrl(p)} alt="Property" className="size-full object-cover" />
+            <img src={thumbUrl(p)} alt="Property" className="size-full object-cover" loading="lazy" />
             <button
               type="button"
               onClick={() => onChange(paths.filter((x) => x !== p))}
