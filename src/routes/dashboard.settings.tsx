@@ -2,14 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBroker } from "@/hooks/useBroker";
 import { slugify } from "@/lib/property";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { PhotoUploader } from "@/components/PhotoUploader";
 import { Badge } from "@/components/ui/badge";
+
 
 export const Route = createFileRoute("/dashboard/settings")({
   head: () => ({
