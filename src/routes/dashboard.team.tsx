@@ -57,7 +57,7 @@ function TeamPage() {
       .update({ account_type: "agency", agency_seat_role: "owner" })
       .eq("id", broker!.id);
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     void qc.invalidateQueries({ queryKey: ["broker", broker!.id] });
     toast.success("Agency mode enabled. Pick a plan to unlock seats.");
   }
@@ -68,7 +68,8 @@ function TeamPage() {
     setBusy(false);
     const res = data as { ok: boolean; reason?: string } | null;
     if (error || !res?.ok) {
-      return toast.error(INVITE_ERRORS[res?.reason ?? ""] ?? "Could not accept the invite.");
+      toast.error(INVITE_ERRORS[res?.reason ?? ""] ?? "Could not accept the invite.");
+      return;
     }
     void qc.invalidateQueries();
     toast.success("You've joined the agency.");
@@ -80,7 +81,8 @@ function TeamPage() {
     setBusy(false);
     const res = data as { ok: boolean; reason?: string } | null;
     if (error || !res?.ok) {
-      return toast.error(INVITE_ERRORS[res?.reason ?? ""] ?? "Could not send the invite.");
+      toast.error(INVITE_ERRORS[res?.reason ?? ""] ?? "Could not send the invite.");
+      return;
     }
     setEmail("");
     void qc.invalidateQueries({ queryKey: ["agency-members", ownerId] });
@@ -90,7 +92,7 @@ function TeamPage() {
   async function removeMember(id: string) {
     const { data, error } = await supabase.rpc("remove_agency_member", { _member_id: id });
     const res = data as { ok: boolean } | null;
-    if (error || !res?.ok) return toast.error("Could not remove that teammate.");
+    if (error || !res?.ok) { toast.error("Could not remove that teammate."); return; }
     void qc.invalidateQueries({ queryKey: ["agency-members", ownerId] });
     void qc.invalidateQueries({ queryKey: ["agency-teammates", ownerId] });
     toast.success("Teammate removed.");

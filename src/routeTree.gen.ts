@@ -17,6 +17,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardTeamRouteImport } from './routes/dashboard.team'
 import { Route as BSubdomainIndexRouteImport } from './routes/b.$subdomain.index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard.properties.index'
 import { Route as DashboardPropertiesIdRouteImport } from './routes/dashboard.properties.$id'
@@ -65,6 +66,11 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardTeamRoute = DashboardTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const BSubdomainIndexRoute = BSubdomainIndexRouteImport.update({
   id: '/b/$subdomain/',
   path: '/b/$subdomain/',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/team': typeof DashboardTeamRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/team': typeof DashboardTeamRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/team': typeof DashboardTeamRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/dashboard/leads'
     | '/dashboard/settings'
+    | '/dashboard/team'
     | '/dashboard/'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/dashboard/leads'
     | '/dashboard/settings'
+    | '/dashboard/team'
     | '/dashboard'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/dashboard/leads'
     | '/dashboard/settings'
+    | '/dashboard/team'
     | '/dashboard/'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
@@ -276,6 +288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/team': {
+      id: '/dashboard/team'
+      path: '/team'
+      fullPath: '/dashboard/team'
+      preLoaderRoute: typeof DashboardTeamRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/b/$subdomain/': {
       id: '/b/$subdomain/'
       path: '/b/$subdomain'
@@ -331,6 +350,7 @@ declare module '@tanstack/react-router' {
 interface DashboardRouteChildren {
   DashboardLeadsRoute: typeof DashboardLeadsRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardTeamRoute: typeof DashboardTeamRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardPropertiesIdRoute: typeof DashboardPropertiesIdRoute
   DashboardPropertiesNewRoute: typeof DashboardPropertiesNewRoute
@@ -340,6 +360,7 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardLeadsRoute: DashboardLeadsRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardTeamRoute: DashboardTeamRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardPropertiesIdRoute: DashboardPropertiesIdRoute,
   DashboardPropertiesNewRoute: DashboardPropertiesNewRoute,
