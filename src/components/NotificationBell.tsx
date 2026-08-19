@@ -2,11 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type Notification = {
   id: string;

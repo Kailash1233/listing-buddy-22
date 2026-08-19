@@ -15,9 +15,15 @@ export const Route = createFileRoute("/dashboard/settings")({
   head: () => ({
     meta: [
       { title: "Settings — Plotly" },
-      { name: "description", content: "Update your broker profile, WhatsApp number and public profile link." },
+      {
+        name: "description",
+        content: "Update your broker profile, WhatsApp number and public profile link.",
+      },
       { property: "og:title", content: "Settings — Plotly" },
-      { property: "og:description", content: "Update your broker profile, WhatsApp number and public profile link." },
+      {
+        property: "og:description",
+        content: "Update your broker profile, WhatsApp number and public profile link.",
+      },
     ],
   }),
   component: SettingsPage,
@@ -58,7 +64,9 @@ function SettingsPage() {
       .eq("id", broker!.id);
     setSaving(false);
     if (error) {
-      toast.error(/duplicate|unique/i.test(error.message) ? "That profile link is taken." : error.message);
+      toast.error(
+        /duplicate|unique/i.test(error.message) ? "That profile link is taken." : error.message,
+      );
       return;
     }
     void qc.invalidateQueries({ queryKey: ["broker", broker!.id] });
@@ -84,18 +92,33 @@ function SettingsPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="wa">WhatsApp number</Label>
-            <Input id="wa" inputMode="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} />
+            <Input
+              id="wa"
+              inputMode="tel"
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="phone">Call number</Label>
-            <Input id="phone" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <Input
+              id="phone"
+              inputMode="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
           </div>
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="sub">Profile link</Label>
           <div className="flex items-center gap-1">
             <span className="text-sm text-muted-foreground">/b/</span>
-            <Input id="sub" value={sub} onChange={(e) => setSub(e.target.value)} onBlur={() => setSub(slugify(sub))} />
+            <Input
+              id="sub"
+              value={sub}
+              onChange={(e) => setSub(e.target.value)}
+              onBlur={() => setSub(slugify(sub))}
+            />
           </div>
           <p className="text-xs text-muted-foreground">
             Changing this breaks links you've already shared.
@@ -138,4 +161,3 @@ function SettingsPage() {
     </div>
   );
 }
-

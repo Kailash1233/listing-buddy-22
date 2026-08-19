@@ -7,13 +7,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { parseListing, regenerateCopy } from "@/lib/ai.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
-import {
-  AMENITY_OPTIONS,
-  FACINGS,
-  formatINR,
-  photoPaths,
-  slugify,
-} from "@/lib/property";
+import { AMENITY_OPTIONS, FACINGS, formatINR, photoPaths, slugify } from "@/lib/property";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -244,7 +238,9 @@ export function PropertyEditor({
         lng: draft.lng ? Number(draft.lng) : null,
         amenities: draft.amenities,
         rera_number: draft.rera_number || null,
-        rera_status: draft.rera_number ? ("provided_unverified" as const) : ("not_provided" as const),
+        rera_status: draft.rera_number
+          ? ("provided_unverified" as const)
+          : ("not_provided" as const),
         photos: draft.photos,
         floor_plan_url: draft.floor_plan[0] ?? null,
         status: property?.status ?? ("draft" as const),
@@ -303,7 +299,6 @@ export function PropertyEditor({
       }
 
       onSaved(saved, publish && saved.status === "active");
-
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not save");
     } finally {
@@ -413,7 +408,10 @@ export function PropertyEditor({
           </div>
           <div className="space-y-1.5">
             <Label>Facing</Label>
-            <Select value={draft.facing || "none"} onValueChange={(v) => set("facing", v === "none" ? "" : v)}>
+            <Select
+              value={draft.facing || "none"}
+              onValueChange={(v) => set("facing", v === "none" ? "" : v)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -460,11 +458,21 @@ export function PropertyEditor({
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="lat">Latitude (optional)</Label>
-            <Input id="lat" value={draft.lat} onChange={(e) => set("lat", e.target.value)} placeholder="13.0878" />
+            <Input
+              id="lat"
+              value={draft.lat}
+              onChange={(e) => set("lat", e.target.value)}
+              placeholder="13.0878"
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="lng">Longitude (optional)</Label>
-            <Input id="lng" value={draft.lng} onChange={(e) => set("lng", e.target.value)} placeholder="80.2101" />
+            <Input
+              id="lng"
+              value={draft.lng}
+              onChange={(e) => set("lng", e.target.value)}
+              placeholder="80.2101"
+            />
           </div>
         </div>
       </div>
@@ -522,11 +530,7 @@ export function PropertyEditor({
       </div>
 
       <div className="surface space-y-5 p-5">
-        <PhotoUploader
-          userId={broker.id}
-          paths={draft.photos}
-          onChange={(p) => set("photos", p)}
-        />
+        <PhotoUploader userId={broker.id} paths={draft.photos} onChange={(p) => set("photos", p)} />
         <PhotoUploader
           userId={broker.id}
           paths={draft.floor_plan}
@@ -579,7 +583,9 @@ export function PropertyEditor({
 
       <TabsContent value="ai" className="space-y-6">
         <div className="surface space-y-3 p-5">
-          <Label htmlFor="raw">Paste your property details — even a rough WhatsApp message works</Label>
+          <Label htmlFor="raw">
+            Paste your property details — even a rough WhatsApp message works
+          </Label>
           <Textarea
             id="raw"
             rows={5}

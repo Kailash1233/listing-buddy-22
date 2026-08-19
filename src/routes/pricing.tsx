@@ -2,13 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Sparkles, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  AGENCY_PLANS,
-  SALES_WHATSAPP_URL,
-  SOLO_PACKS,
-  isOfferLive,
-  rupees,
-} from "@/lib/pricing";
+import { AGENCY_PLANS, SALES_WHATSAPP_URL, SOLO_PACKS, isOfferLive, rupees } from "@/lib/pricing";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -38,7 +32,11 @@ function comingSoon() {
 
 function PricingPage() {
   const packs = [SOLO_PACKS.free, SOLO_PACKS.starter, SOLO_PACKS.launch];
-  const agencies = [AGENCY_PLANS.starter_agency, AGENCY_PLANS.growth_agency, AGENCY_PLANS.enterprise];
+  const agencies = [
+    AGENCY_PLANS.starter_agency,
+    AGENCY_PLANS.growth_agency,
+    AGENCY_PLANS.enterprise,
+  ];
 
   return (
     <main className="min-h-screen bg-background">
@@ -56,7 +54,9 @@ function PricingPage() {
 
       <section className="mx-auto max-w-5xl px-4 py-12">
         <h2 className="text-lg font-bold">Solo brokers</h2>
-        <p className="text-sm text-muted-foreground">One-time packs. No subscription, nothing to cancel.</p>
+        <p className="text-sm text-muted-foreground">
+          One-time packs. No subscription, nothing to cancel.
+        </p>
 
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {packs.map((pack) => {

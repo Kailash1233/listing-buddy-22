@@ -1,6 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Building2, ExternalLink, Eye, Globe, Inbox, MessageCircle, Plus, Sparkles } from "lucide-react";
+import {
+  Building2,
+  ExternalLink,
+  Eye,
+  Globe,
+  Inbox,
+  MessageCircle,
+  Plus,
+  Sparkles,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBroker, type Lead, type Property } from "@/hooks/useBroker";
 import { Button } from "@/components/ui/button";
@@ -12,9 +21,15 @@ export const Route = createFileRoute("/dashboard/")({
   head: () => ({
     meta: [
       { title: "Your dashboard — Plotly" },
-      { name: "description", content: "Track views, enquiries and your live property pages in one place." },
+      {
+        name: "description",
+        content: "Track views, enquiries and your live property pages in one place.",
+      },
       { property: "og:title", content: "Your dashboard — Plotly" },
-      { property: "og:description", content: "Track views, enquiries and your live property pages in one place." },
+      {
+        property: "og:description",
+        content: "Track views, enquiries and your live property pages in one place.",
+      },
     ],
   }),
   component: DashboardHome,
@@ -57,7 +72,11 @@ function DashboardHome() {
   const newLeads = (leads.data ?? []).filter((l) => !l.is_read).length;
 
   const stats = [
-    { label: "Live listings", value: list.filter((p) => p.status === "active").length, icon: Building2 },
+    {
+      label: "Live listings",
+      value: list.filter((p) => p.status === "active").length,
+      icon: Building2,
+    },
     { label: "Page views", value: views, icon: Eye },
     { label: "WhatsApp clicks", value: waClicks, icon: MessageCircle },
     { label: "New enquiries", value: newLeads, icon: Inbox },

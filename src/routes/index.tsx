@@ -148,9 +148,21 @@ function Landing() {
       <section className="border-y border-border bg-card">
         <div className="mx-auto grid max-w-6xl gap-8 px-5 py-16 md:grid-cols-3">
           {[
-            { icon: Smartphone, t: "Pages buyers trust", d: "Image-forward, mobile-first listings that look like a real portal page — not a form dump." },
-            { icon: MessageCircle, t: "WhatsApp-ready", d: "A pre-written share message and a wa.me button on every page, tracked as clicks." },
-            { icon: FileText, t: "PDF brochure", d: "Download a clean one-page brochure generated from the same listing data." },
+            {
+              icon: Smartphone,
+              t: "Pages buyers trust",
+              d: "Image-forward, mobile-first listings that look like a real portal page — not a form dump.",
+            },
+            {
+              icon: MessageCircle,
+              t: "WhatsApp-ready",
+              d: "A pre-written share message and a wa.me button on every page, tracked as clicks.",
+            },
+            {
+              icon: FileText,
+              t: "PDF brochure",
+              d: "Download a clean one-page brochure generated from the same listing data.",
+            },
           ].map((f) => (
             <div key={f.t}>
               <f.icon className="size-6 text-primary" />
@@ -208,7 +220,6 @@ function Landing() {
           ))}
         </div>
       </section>
-
 
       <footer className="border-t border-border py-10 text-center text-sm text-muted-foreground">
         Plotly · Property microsites for brokers · Chennai
