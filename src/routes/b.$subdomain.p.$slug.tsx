@@ -80,7 +80,9 @@ function PublicProperty() {
     void trackPublicEvent({ data: { propertyId: property.id, eventType: "view" } });
   }, [property.id]);
 
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  // Set after hydration so SSR and client markup match.
+  const [shareUrl, setShareUrl] = useState("");
+  useEffect(() => setShareUrl(window.location.href), []);
   const waMessage = `${property.whatsapp_message || property.title}\n\n${shareUrl}`;
 
   const facts = [
@@ -160,6 +162,9 @@ function PublicProperty() {
               <p className="eyebrow text-muted-foreground">{f.label}</p>
               <p className="mt-1 text-base font-bold capitalize">{f.value}</p>
             </div>
+          ))}
+          {Array.from({ length: (4 - (facts.length % 4)) % 4 }).map((_, i) => (
+            <div key={`pad-${i}`} className="hidden bg-card sm:block" />
           ))}
         </section>
 
