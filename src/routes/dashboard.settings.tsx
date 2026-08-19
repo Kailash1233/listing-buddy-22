@@ -145,7 +145,7 @@ function SettingsPage() {
         <div className="space-y-1.5">
           <Label htmlFor="sub">Profile link</Label>
           <div className="flex items-center gap-1">
-            <span className="text-sm text-muted-foreground">/b/</span>
+            <span className="text-sm text-muted-foreground">/p/</span>
             <Input
               id="sub"
               value={sub}
