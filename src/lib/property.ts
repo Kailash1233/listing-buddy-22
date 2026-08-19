@@ -49,6 +49,13 @@ export function mediaUrl(path?: string | null): string {
   return `/api/public/media/${path}`;
 }
 
+/** Small (400px) variant written at upload time; the media route falls back to the original. */
+export function thumbUrl(path?: string | null): string {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  return `/api/public/media/${path}.thumb.jpg`;
+}
+
 export function photoPaths(photos: unknown): string[] {
   if (!Array.isArray(photos)) return [];
   return photos.filter((p): p is string => typeof p === "string");
