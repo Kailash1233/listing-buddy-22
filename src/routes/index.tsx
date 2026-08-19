@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { SOLO_PACKS, isOfferLive, rupees } from "@/lib/pricing";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowRight,
