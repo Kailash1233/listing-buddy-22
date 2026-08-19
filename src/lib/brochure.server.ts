@@ -171,6 +171,13 @@ export async function buildBrochure(propertyId: string) {
       : "RERA number not provided by broker.",
     { x: 40, y: 22, size: 8, font, color: GREY },
   );
+  page.drawText("Powered by Adszoo - adszoo.in", {
+    x: 430,
+    y: 22,
+    size: 8,
+    font,
+    color: GREY,
+  });
 
   const bytes = await pdf.save();
 
