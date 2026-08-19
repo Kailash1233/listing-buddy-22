@@ -45,3 +45,30 @@ export const trackPublicEvent = createServerFn({ method: "POST" })
     });
     return { ok: true };
   });
+
+export const getPublicBrokerPage = createServerFn({ method: "GET" })
+  .inputValidator((data: unknown) =>
+    z.object({ subdomain: z.string().trim().min(1).max(80) }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: broker } = await supabaseAdmin
+      .from("brokers")
+      .select("id, name, agency_name, whatsapp_number, subdomain_slug")
+      .eq("subdomain_slug", data.subdomain)
+      .maybeSingle();
+    if (!broker) return null;
+
+    const { data: properties } = await supabaseAdmin
+      .from("properties")
+      .select(
+        "id, slug, title, price_display, price, bhk, area_sqft, locality, city, photos, status, property_type, listing_type",
+      )
+      .eq("broker_id", broker.id)
+      .in("status", ["active", "sold", "rented"])
+      .order("created_at", { ascending: false })
+      .limit(60);
+
+    return { broker, properties: properties ?? [] };
+  });
