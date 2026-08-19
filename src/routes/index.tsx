@@ -50,23 +50,6 @@ const steps = [
   },
 ];
 
-const plans = [
-  { name: "Free", price: "₹0", note: "3 live properties", perks: ["Property pages", "WhatsApp share", "Lead inbox"] },
-  {
-    name: "Starter",
-    price: "₹499",
-    note: "25 live properties",
-    perks: ["Everything in Free", "PDF brochures", "Basic analytics"],
-    featured: true,
-  },
-  {
-    name: "Pro",
-    price: "₹1,499",
-    note: "Unlimited properties",
-    perks: ["Everything in Starter", "Custom broker link", "Priority support"],
-  },
-];
-
 function Landing() {
   return (
     <div className="min-h-screen bg-background">
