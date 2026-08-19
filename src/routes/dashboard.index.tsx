@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Building2, Eye, Inbox, MessageCircle, Plus } from "lucide-react";
+import { Building2, ExternalLink, Eye, Globe, Inbox, MessageCircle, Plus, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBroker, type Lead, type Property } from "@/hooks/useBroker";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PropertyCard } from "@/components/PropertyCard";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({
@@ -71,6 +72,27 @@ function DashboardHome() {
         <p className="mt-1 text-muted-foreground">Here's how your listings are doing.</p>
       </div>
 
+      {broker ? <CreditsBanner broker={broker} /> : null}
+
+      {broker ? (
+        <div className="surface flex flex-wrap items-center justify-between gap-3 p-5">
+          <div className="flex items-start gap-3">
+            <Globe className="mt-0.5 size-5 text-primary" />
+            <div>
+              <p className="font-semibold">Your website is live</p>
+              <p className="text-sm text-muted-foreground">
+                All your published listings on one shareable page.
+              </p>
+            </div>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/b/$subdomain" params={{ subdomain: broker.subdomain_slug }} target="_blank">
+              Visit page <ExternalLink className="size-4" />
+            </Link>
+          </Button>
+        </div>
+      ) : null}
+
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="surface p-4">
@@ -116,6 +138,55 @@ function DashboardHome() {
           </div>
         )}
       </section>
+    </div>
+  );
+}
+
+function CreditsBanner({ broker }: { broker: NonNullable<ReturnType<typeof useBroker>["data"]> }) {
+  const credits = broker.listing_credits_remaining ?? 0;
+  const low = credits <= 1;
+
+  if (broker.account_type === "agency") {
+    return (
+      <div className="surface flex flex-wrap items-center justify-between gap-3 p-5">
+        <div>
+          <p className="font-semibold">Agency plan</p>
+          <p className="text-sm text-muted-foreground">
+            Listings are drawn from your agency's shared monthly pool.
+          </p>
+        </div>
+        <Button asChild variant="outline" size="sm">
+          <Link to="/pricing">View plans</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`surface flex flex-wrap items-center justify-between gap-3 p-5 ${
+        low ? "border-warm bg-warm/10" : ""
+      }`}
+    >
+      <div className="flex items-start gap-3">
+        <Sparkles className="mt-0.5 size-5 text-primary" />
+        <div>
+          <p className="font-semibold">
+            {credits} listing credit{credits === 1 ? "" : "s"} left{" "}
+            <Badge variant="secondary" className="ml-1 align-middle">
+              never expires
+            </Badge>
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {low
+              ? "You're nearly out — top up to keep publishing."
+              : "Each published listing uses one credit."}
+          </p>
+        </div>
+      </div>
+      <Button asChild size="sm" variant={low ? "default" : "outline"}>
+        <Link to="/pricing">Buy listing credits</Link>
+      </Button>
     </div>
   );
 }
