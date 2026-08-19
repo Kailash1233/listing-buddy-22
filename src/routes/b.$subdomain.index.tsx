@@ -4,6 +4,7 @@ import { getPublicBrokerPage } from "@/lib/public-listing.functions";
 import { formatINR, mediaUrl, photoPaths, waLink } from "@/lib/property";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 
 export const Route = createFileRoute("/b/$subdomain/")({
   loader: async ({ params }) => {
@@ -127,6 +128,8 @@ function BrokerPage() {
           </div>
         )}
       </section>
+
+      <PoweredByAdszoo />
     </main>
   );
 }

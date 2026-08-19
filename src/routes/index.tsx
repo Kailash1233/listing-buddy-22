@@ -17,6 +17,7 @@ import home5 from "@/assets/home-5.png.asset.json";
 import home6 from "@/assets/home-6.png.asset.json";
 import home7 from "@/assets/home-7.png.asset.json";
 import home8 from "@/assets/home-8.png.asset.json";
+import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -359,6 +360,7 @@ function Landing() {
 
       <footer className="border-t border-border py-10 text-center text-sm text-muted-foreground">
         Plotly · Property microsites for brokers · Chennai
+        <PoweredByAdszoo className="py-4" />
       </footer>
     </div>
   );

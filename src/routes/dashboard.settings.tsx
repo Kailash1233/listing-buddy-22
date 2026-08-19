@@ -42,6 +42,8 @@ function SettingsPage() {
   const [sub, setSub] = useState("");
   const [bio, setBio] = useState("");
   const [photo, setPhoto] = useState<string[]>([]);
+  const [years, setYears] = useState("");
+  const [deals, setDeals] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -53,6 +55,8 @@ function SettingsPage() {
     setSub(broker.subdomain_slug ?? "");
     setBio(broker.bio ?? "");
     setPhoto(broker.photo_url ? [broker.photo_url] : []);
+    setYears(broker.years_experience != null ? String(broker.years_experience) : "");
+    setDeals(broker.deals_closed != null ? String(broker.deals_closed) : "");
   }, [broker]);
 
   if (!broker) return null;
@@ -69,6 +73,8 @@ function SettingsPage() {
         subdomain_slug: slugify(sub),
         bio: bio.trim() || null,
         photo_url: photo[0] ?? null,
+        years_experience: years.trim() === "" ? null : Number(years.replace(/\D/g, "")),
+        deals_closed: deals.trim() === "" ? null : Number(deals.replace(/\D/g, "")),
       })
       .eq("id", broker!.id);
 
@@ -121,6 +127,32 @@ function SettingsPage() {
             Shown on your public agent page. {600 - bio.length} characters left.
           </p>
         </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="years">Years of experience (optional)</Label>
+            <Input
+              id="years"
+              inputMode="numeric"
+              value={years}
+              onChange={(e) => setYears(e.target.value)}
+              placeholder="8"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="deals">Deals closed (optional)</Label>
+            <Input
+              id="deals"
+              inputMode="numeric"
+              value={deals}
+              onChange={(e) => setDeals(e.target.value)}
+              placeholder="120"
+            />
+          </div>
+        </div>
+        <p className="-mt-2 text-xs text-muted-foreground">
+          Shown on your public agent page. Leave blank to hide.
+        </p>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">

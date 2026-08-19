@@ -122,6 +122,7 @@ export type Database = {
             | null
           bio: string | null
           created_at: string
+          deals_closed: number | null
           id: string
           listing_credits_remaining: number
           name: string
@@ -130,6 +131,7 @@ export type Database = {
           subdomain_slug: string
           updated_at: string
           whatsapp_number: string
+          years_experience: number | null
         }
         Insert: {
           account_type?: Database["public"]["Enums"]["account_type"]
@@ -140,6 +142,7 @@ export type Database = {
             | null
           bio?: string | null
           created_at?: string
+          deals_closed?: number | null
           id: string
           listing_credits_remaining?: number
           name?: string
@@ -148,6 +151,7 @@ export type Database = {
           subdomain_slug: string
           updated_at?: string
           whatsapp_number?: string
+          years_experience?: number | null
         }
         Update: {
           account_type?: Database["public"]["Enums"]["account_type"]
@@ -158,6 +162,7 @@ export type Database = {
             | null
           bio?: string | null
           created_at?: string
+          deals_closed?: number | null
           id?: string
           listing_credits_remaining?: number
           name?: string
@@ -166,6 +171,7 @@ export type Database = {
           subdomain_slug?: string
           updated_at?: string
           whatsapp_number?: string
+          years_experience?: number | null
         }
         Relationships: [
           {
@@ -411,6 +417,7 @@ export type Database = {
           area_sqft: number | null
           bhk: number | null
           broker_id: string
+          broker_note: string | null
           call_click_count: number
           city: string
           created_at: string
@@ -446,6 +453,7 @@ export type Database = {
           area_sqft?: number | null
           bhk?: number | null
           broker_id: string
+          broker_note?: string | null
           call_click_count?: number
           city?: string
           created_at?: string
@@ -481,6 +489,7 @@ export type Database = {
           area_sqft?: number | null
           bhk?: number | null
           broker_id?: string
+          broker_note?: string | null
           call_click_count?: number
           city?: string
           created_at?: string

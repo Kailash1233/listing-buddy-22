@@ -50,7 +50,7 @@ export const getPublicListing = createServerFn({ method: "GET" })
 
     const { data: broker } = await supabaseAdmin
       .from("brokers")
-      .select("id, name, agency_name, phone, whatsapp_number, subdomain_slug")
+      .select("id, name, agency_name, phone, whatsapp_number, subdomain_slug, bio, photo_url, years_experience, deals_closed")
       .eq("subdomain_slug", data.subdomain)
       .maybeSingle();
     if (!broker) return null;
@@ -64,7 +64,13 @@ export const getPublicListing = createServerFn({ method: "GET" })
       .maybeSingle();
     if (!property) return null;
 
-    return { broker, property };
+    const { count } = await supabaseAdmin
+      .from("properties")
+      .select("id", { count: "exact", head: true })
+      .eq("broker_id", broker.id)
+      .eq("status", "active");
+
+    return { broker, property, activeCount: count ?? 0 };
   });
 
 export const trackPublicEvent = createServerFn({ method: "POST" })
@@ -130,7 +136,7 @@ export const getPublicBrokerPage = createServerFn({ method: "GET" })
 
     const { data: broker } = await supabaseAdmin
       .from("brokers")
-      .select("id, name, agency_name, phone, whatsapp_number, subdomain_slug, bio, photo_url")
+      .select("id, name, agency_name, phone, whatsapp_number, subdomain_slug, bio, photo_url, years_experience, deals_closed")
       .eq("subdomain_slug", data.subdomain)
       .maybeSingle();
     if (!broker) return null;
