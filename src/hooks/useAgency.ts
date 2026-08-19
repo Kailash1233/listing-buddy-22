@@ -75,11 +75,13 @@ export function useAgency() {
     },
   });
 
+  const teammateIds = (teammates.data ?? []).map((t) => t.id);
+
   const pool = useQuery({
-    queryKey: ["agency-listings", ownerId],
-    enabled: !!ownerId,
+    queryKey: ["agency-listings", ownerId, teammateIds.join(",")],
+    enabled: !!ownerId && teammates.isSuccess,
     queryFn: async () => {
-      const ids = (teammates.data ?? []).map((t) => t.id);
+      const ids = teammateIds;
       if (ids.length === 0) return [] as Property[];
       const { data, error } = await supabase
         .from("properties")
