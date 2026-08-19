@@ -1,7 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { BedDouble, Building2, MapPin, MessageCircle, Phone, Ruler } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { BedDouble, Building2, MapPin, MessageCircle, Phone, Ruler, Share2 } from "lucide-react";
 import { getPublicBrokerPage } from "@/lib/public-listing.functions";
-import { formatINR, mediaUrl, photoPaths, thumbUrl, waLink } from "@/lib/property";
+import { formatINR, photoPaths, thumbUrl, waLink } from "@/lib/property";
+import { BrokerAvatar } from "@/components/BrokerAvatar";
+import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -51,51 +55,65 @@ function AgentPage() {
   const name = broker.agency_name || broker.name;
   const live = properties.filter((p) => p.status === "active");
 
+  const stats = [
+    { label: "Listings", value: String(live.length) },
+    { label: "Years exp", value: broker.years_experience != null ? String(broker.years_experience) : "–" },
+    { label: "Deals closed", value: broker.deals_closed != null ? String(broker.deals_closed) : "–" },
+  ];
+
   return (
     <main className="min-h-screen bg-background">
       <header className="navy-gradient">
-        <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-12 sm:flex-row sm:items-center">
-          <div className="size-24 shrink-0 overflow-hidden rounded-2xl bg-white/10">
-            {broker.photo_url ? (
-              <img
-                src={mediaUrl(broker.photo_url)}
-                alt={`${broker.name}, property agent`}
-                className="size-full object-cover"
-              />
-            ) : (
-              <div className="grid size-full place-items-center text-2xl font-bold">
-                {broker.name.slice(0, 1).toUpperCase()}
-              </div>
-            )}
+        <div className="mx-auto max-w-5xl px-4 py-12">
+          <div className="flex justify-end">
+            <ShareButton name={name} />
           </div>
-          <div className="min-w-0">
-            <p className="eyebrow opacity-70">Chennai property agent</p>
-            <h1 className="mt-1 text-3xl font-extrabold tracking-tight">{name}</h1>
-            {broker.agency_name ? <p className="mt-1 opacity-80">{broker.name}</p> : null}
-            {broker.bio ? (
-              <p className="mt-3 max-w-xl text-sm leading-relaxed opacity-85">{broker.bio}</p>
-            ) : null}
-            <div className="mt-5 flex flex-wrap gap-3">
-              {broker.whatsapp_number ? (
-                <Button asChild variant="secondary">
-                  <a
-                    href={waLink(broker.whatsapp_number, `Hi ${broker.name}, I saw your listings.`)}
+          <div className="mt-2 flex flex-col gap-6 sm:flex-row sm:items-center">
+            <BrokerAvatar
+              name={broker.name}
+              photoUrl={broker.photo_url}
+              className="size-24 bg-white/10 text-2xl text-inherit"
+            />
+            <div className="min-w-0">
+              <p className="eyebrow opacity-70">Chennai property agent</p>
+              <h1 className="mt-1 text-3xl font-extrabold tracking-tight">{name}</h1>
+              {broker.agency_name ? <p className="mt-1 opacity-80">{broker.name}</p> : null}
+
+              <dl className="mt-5 flex gap-8">
+                {stats.map((s) => (
+                  <div key={s.label}>
+                    <dt className="eyebrow opacity-60">{s.label}</dt>
+                    <dd className="mt-1 text-2xl font-extrabold">{s.value}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              {broker.bio ? (
+                <p className="mt-5 max-w-xl text-sm leading-relaxed opacity-85">{broker.bio}</p>
+              ) : null}
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                {broker.whatsapp_number ? (
+                  <Button asChild variant="secondary">
+                    <a
+                      href={waLink(broker.whatsapp_number, `Hi ${broker.name}, I saw your listings.`)}
+                    >
+                      <MessageCircle className="size-4" /> WhatsApp
+                    </a>
+                  </Button>
+                ) : null}
+                {broker.phone ? (
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="border-white/30 bg-transparent text-inherit hover:bg-white/10"
                   >
-                    <MessageCircle className="size-4" /> WhatsApp
-                  </a>
-                </Button>
-              ) : null}
-              {broker.phone ? (
-                <Button
-                  asChild
-                  variant="outline"
-                  className="border-white/30 bg-transparent text-inherit hover:bg-white/10"
-                >
-                  <a href={`tel:${broker.phone}`}>
-                    <Phone className="size-4" /> Call
-                  </a>
-                </Button>
-              ) : null}
+                    <a href={`tel:${broker.phone}`}>
+                      <Phone className="size-4" /> Call
+                    </a>
+                  </Button>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
@@ -165,6 +183,40 @@ function AgentPage() {
           </div>
         )}
       </section>
+
+      <PoweredByAdszoo />
     </main>
+  );
+}
+
+function ShareButton({ name }: { name: string }) {
+  const [busy, setBusy] = useState(false);
+
+  async function share() {
+    const url = window.location.href;
+    setBusy(true);
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share({ title: name, text: `Properties from ${name}`, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copied to clipboard");
+      }
+    } catch {
+      /* user dismissed the share sheet */
+    }
+    setBusy(false);
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={share}
+      disabled={busy}
+      className="border-white/30 bg-transparent text-inherit hover:bg-white/10"
+    >
+      <Share2 className="size-4" /> Share
+    </Button>
   );
 }
