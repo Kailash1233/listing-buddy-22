@@ -10,33 +10,173 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard.properties.index'
+import { Route as DashboardPropertiesIdRouteImport } from './routes/dashboard.properties.$id'
+import { Route as DashboardPropertiesNewRouteImport } from './routes/dashboard.properties.new'
+import { Route as ApiPublicBrochureIdRouteImport } from './routes/api/public/brochure.$id'
+import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLeadsRoute = DashboardLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardPropertiesIndexRoute =
+  DashboardPropertiesIndexRouteImport.update({
+    id: '/properties/',
+    path: '/properties/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardPropertiesIdRoute = DashboardPropertiesIdRouteImport.update({
+  id: '/properties/$id',
+  path: '/properties/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardPropertiesNewRoute = DashboardPropertiesNewRouteImport.update({
+  id: '/properties/new',
+  path: '/properties/new',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const ApiPublicBrochureIdRoute = ApiPublicBrochureIdRouteImport.update({
+  id: '/api/public/brochure/$id',
+  path: '/api/public/brochure/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
+  id: '/api/public/media/$',
+  path: '/api/public/media/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/onboarding': typeof OnboardingRoute
+  '/dashboard/leads': typeof DashboardLeadsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
+  '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
+  '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
+  '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/onboarding': typeof OnboardingRoute
+  '/dashboard/leads': typeof DashboardLeadsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
+  '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
+  '/dashboard/properties': typeof DashboardPropertiesIndexRoute
+  '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/onboarding': typeof OnboardingRoute
+  '/dashboard/leads': typeof DashboardLeadsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
+  '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
+  '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
+  '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/onboarding'
+    | '/dashboard/leads'
+    | '/dashboard/settings'
+    | '/dashboard/'
+    | '/dashboard/properties/$id'
+    | '/dashboard/properties/new'
+    | '/dashboard/properties/'
+    | '/api/public/brochure/$id'
+    | '/api/public/media/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/onboarding'
+    | '/dashboard/leads'
+    | '/dashboard/settings'
+    | '/dashboard'
+    | '/dashboard/properties/$id'
+    | '/dashboard/properties/new'
+    | '/dashboard/properties'
+    | '/api/public/brochure/$id'
+    | '/api/public/media/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/onboarding'
+    | '/dashboard/leads'
+    | '/dashboard/settings'
+    | '/dashboard/'
+    | '/dashboard/properties/$id'
+    | '/dashboard/properties/new'
+    | '/dashboard/properties/'
+    | '/api/public/brochure/$id'
+    | '/api/public/media/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  OnboardingRoute: typeof OnboardingRoute
+  ApiPublicBrochureIdRoute: typeof ApiPublicBrochureIdRoute
+  ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +188,115 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/leads': {
+      id: '/dashboard/leads'
+      path: '/leads'
+      fullPath: '/dashboard/leads'
+      preLoaderRoute: typeof DashboardLeadsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/properties/': {
+      id: '/dashboard/properties/'
+      path: '/properties'
+      fullPath: '/dashboard/properties/'
+      preLoaderRoute: typeof DashboardPropertiesIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/properties/$id': {
+      id: '/dashboard/properties/$id'
+      path: '/properties/$id'
+      fullPath: '/dashboard/properties/$id'
+      preLoaderRoute: typeof DashboardPropertiesIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/properties/new': {
+      id: '/dashboard/properties/new'
+      path: '/properties/new'
+      fullPath: '/dashboard/properties/new'
+      preLoaderRoute: typeof DashboardPropertiesNewRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/api/public/brochure/$id': {
+      id: '/api/public/brochure/$id'
+      path: '/api/public/brochure/$id'
+      fullPath: '/api/public/brochure/$id'
+      preLoaderRoute: typeof ApiPublicBrochureIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/media/$': {
+      id: '/api/public/media/$'
+      path: '/api/public/media/$'
+      fullPath: '/api/public/media/$'
+      preLoaderRoute: typeof ApiPublicMediaSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface DashboardRouteChildren {
+  DashboardLeadsRoute: typeof DashboardLeadsRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardPropertiesIdRoute: typeof DashboardPropertiesIdRoute
+  DashboardPropertiesNewRoute: typeof DashboardPropertiesNewRoute
+  DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardLeadsRoute: DashboardLeadsRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardPropertiesIdRoute: DashboardPropertiesIdRoute,
+  DashboardPropertiesNewRoute: DashboardPropertiesNewRoute,
+  DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  OnboardingRoute: OnboardingRoute,
+  ApiPublicBrochureIdRoute: ApiPublicBrochureIdRoute,
+  ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
