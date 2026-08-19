@@ -40,6 +40,8 @@ function SettingsPage() {
   const [whatsapp, setWhatsapp] = useState("");
   const [phone, setPhone] = useState("");
   const [sub, setSub] = useState("");
+  const [bio, setBio] = useState("");
+  const [photo, setPhoto] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -49,6 +51,8 @@ function SettingsPage() {
     setWhatsapp(broker.whatsapp_number ?? "");
     setPhone(broker.phone ?? "");
     setSub(broker.subdomain_slug ?? "");
+    setBio(broker.bio ?? "");
+    setPhoto(broker.photo_url ? [broker.photo_url] : []);
   }, [broker]);
 
   if (!broker) return null;
@@ -63,8 +67,11 @@ function SettingsPage() {
         whatsapp_number: whatsapp.replace(/\D/g, ""),
         phone: phone.replace(/\D/g, ""),
         subdomain_slug: slugify(sub),
+        bio: bio.trim() || null,
+        photo_url: photo[0] ?? null,
       })
       .eq("id", broker!.id);
+
     setSaving(false);
     if (error) {
       toast.error(
