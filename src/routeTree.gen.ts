@@ -17,6 +17,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as BSubdomainIndexRouteImport } from './routes/b.$subdomain.index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard.properties.index'
 import { Route as DashboardPropertiesIdRouteImport } from './routes/dashboard.properties.$id'
 import { Route as DashboardPropertiesNewRouteImport } from './routes/dashboard.properties.new'
@@ -64,6 +65,11 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const BSubdomainIndexRoute = BSubdomainIndexRouteImport.update({
+  id: '/b/$subdomain/',
+  path: '/b/$subdomain/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardPropertiesIndexRoute =
   DashboardPropertiesIndexRouteImport.update({
     id: '/properties/',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
+  '/b/$subdomain/': typeof BSubdomainIndexRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
+  '/b/$subdomain': typeof BSubdomainIndexRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
+  '/b/$subdomain/': typeof BSubdomainIndexRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
+    | '/b/$subdomain/'
     | '/dashboard/properties/'
     | '/api/public/brochure/$id'
     | '/api/public/media/$'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
+    | '/b/$subdomain'
     | '/dashboard/properties'
     | '/api/public/brochure/$id'
     | '/api/public/media/$'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
+    | '/b/$subdomain/'
     | '/dashboard/properties/'
     | '/api/public/brochure/$id'
     | '/api/public/media/$'
@@ -200,6 +212,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
   PricingRoute: typeof PricingRoute
+  BSubdomainIndexRoute: typeof BSubdomainIndexRoute
   ApiPublicBrochureIdRoute: typeof ApiPublicBrochureIdRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
   BSubdomainPSlugRoute: typeof BSubdomainPSlugRoute
@@ -262,6 +275,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/settings'
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/b/$subdomain/': {
+      id: '/b/$subdomain/'
+      path: '/b/$subdomain'
+      fullPath: '/b/$subdomain/'
+      preLoaderRoute: typeof BSubdomainIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/dashboard/properties/': {
       id: '/dashboard/properties/'
@@ -336,6 +356,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
   PricingRoute: PricingRoute,
+  BSubdomainIndexRoute: BSubdomainIndexRoute,
   ApiPublicBrochureIdRoute: ApiPublicBrochureIdRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
   BSubdomainPSlugRoute: BSubdomainPSlugRoute,
