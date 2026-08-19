@@ -98,7 +98,7 @@ function Landing() {
               </Button>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">
-              Free plan includes 3 live properties. No card needed.
+              Start free with 2 listing credits. No card needed.
             </p>
           </div>
 
