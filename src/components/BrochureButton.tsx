@@ -21,27 +21,48 @@ export function BrochureButton({
   size?: "sm" | "default" | "lg";
 }) {
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
+  const [detail, setDetail] = useState("");
 
   async function download() {
+    const url = `/api/public/brochure/${propertyId}?dl=1`;
+
+    // iOS Safari/Chrome ignore the download attribute on blob: URLs and often
+    // block the synthetic click once the fetch resolves — navigate instead and
+    // let Content-Disposition: attachment do the work.
+    const ios = /iP(hone|ad|od)/.test(navigator.userAgent);
+    if (ios) {
+      window.location.href = url;
+      return;
+    }
+
     setState("loading");
     try {
-      const res = await fetch(`/api/public/brochure/${propertyId}?dl=1`);
-      if (!res.ok) throw new Error(String(res.status));
+      const res = await fetch(url);
+      if (!res.ok) {
+        setDetail(`Server responded ${res.status}.`);
+        throw new Error(String(res.status));
+      }
       const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
+      if (blob.size === 0 || !blob.type.includes("pdf")) {
+        setDetail("The generated file was empty.");
+        throw new Error("empty");
+      }
+      const objectUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url;
+      a.href = objectUrl;
       a.download = `${slug || "property"}.pdf`;
       a.rel = "noopener";
       document.body.appendChild(a);
       a.click();
       a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 10_000);
       setState("idle");
+      setDetail("");
     } catch {
       setState("error");
     }
   }
+
 
   if (state === "error") {
     return (
