@@ -16,6 +16,7 @@ import {
   Car,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getPublicListing, trackPublicEvent } from "@/lib/public-listing.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
 import { formatINR, mediaUrl, photoPaths, waLink } from "@/lib/property";
 import { Button } from "@/components/ui/button";
@@ -26,23 +27,16 @@ import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/b/$subdomain/p/$slug")({
   loader: async ({ params }) => {
-    const { data: broker } = await supabase
-      .from("brokers")
-      .select("*")
-      .eq("subdomain_slug", params.subdomain)
-      .maybeSingle();
-    if (!broker) throw notFound();
-
-    const { data: property } = await supabase
-      .from("properties")
-      .select("*")
-      .eq("broker_id", broker.id)
-      .eq("slug", params.slug)
-      .maybeSingle();
-    if (!property) throw notFound();
-
-    return { broker: broker as Broker, property: property as Property };
+    const result = await getPublicListing({
+      data: { subdomain: params.subdomain, slug: params.slug },
+    });
+    if (!result) throw notFound();
+    return {
+      broker: result.broker as unknown as Broker,
+      property: result.property as Property,
+    };
   },
+
   head: ({ loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Property unavailable" }, { name: "robots", content: "noindex" }] };
@@ -90,10 +84,7 @@ function PublicProperty() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    void supabase.rpc("track_property_event", {
-      _property_id: property.id,
-      _event_type: "view",
-    });
+    void trackPublicEvent({ data: { propertyId: property.id, eventType: "view" } });
   }, [property.id]);
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -109,7 +100,7 @@ function PublicProperty() {
   ].filter(Boolean) as Array<{ icon: typeof BedDouble; label: string }>;
 
   const track = (t: "whatsapp_click" | "call_click") =>
-    void supabase.rpc("track_property_event", { _property_id: property.id, _event_type: t });
+    void trackPublicEvent({ data: { propertyId: property.id, eventType: t } });
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -315,10 +306,7 @@ function LeadForm({ property, brokerId }: { property: Property; brokerId: string
       toast.error("Could not send your enquiry. Please try WhatsApp instead.");
       return;
     }
-    void supabase.rpc("track_property_event", {
-      _property_id: property.id,
-      _event_type: "enquiry_submit",
-    });
+    void trackPublicEvent({ data: { propertyId: property.id, eventType: "enquiry_submit" } });
     setDone(true);
   }
 
