@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Loader2, Sparkles, Wand2 } from "lucide-react";
@@ -27,6 +28,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PhotoUploader } from "@/components/PhotoUploader";
+
+const PUBLISH_ERRORS: Record<string, string> = {
+  no_credits: "You're out of listing credits. Grab a pack to publish this listing.",
+  pool_exhausted: "Your agency's monthly listing pool is used up.",
+  no_active_subscription: "Your agency plan isn't active. Renew to publish listings.",
+  not_found: "Listing not found.",
+  unauthenticated: "Please sign in again.",
+};
 
 type Draft = {
   title: string;
@@ -117,6 +126,7 @@ export function PropertyEditor({
   const [raw, setRaw] = useState("");
   const [aiBusy, setAiBusy] = useState(false);
   const [saving, setSaving] = useState<"draft" | "publish" | null>(null);
+  const qc = useQueryClient();
   const [reviewed, setReviewed] = useState(!!property);
   const navigate = useNavigate();
   const runParse = useServerFn(parseListing);
