@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Check, Copy, ExternalLink, Globe, MessageCircle, PenLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { waLink } from "@/lib/property";
 
 /**
  * "Your website is live" card. Confirms the public agent page once at least one
@@ -63,7 +62,7 @@ export function AgentPageCard({
       <div className="flex flex-wrap gap-2">
         <Button asChild size="sm">
           <a
-            href={waLink("", `Check out my properties: ${link}`).replace("wa.me/?", "wa.me/?")}
+            href={`https://wa.me/?text=${encodeURIComponent(`Check out my properties: ${link}`)}`}
             target="_blank"
             rel="noopener noreferrer"
           >
