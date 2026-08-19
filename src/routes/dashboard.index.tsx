@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Badge } from "@/components/ui/badge";
+import { AgentPageCard } from "@/components/AgentPageCard";
 
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({
