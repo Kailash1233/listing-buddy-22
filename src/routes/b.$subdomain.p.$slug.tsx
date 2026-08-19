@@ -2,17 +2,11 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
-  BedDouble,
-  Building2,
-  Compass,
   Loader2,
   MapPin,
   MessageCircle,
   Phone,
-  Ruler,
   ShieldCheck,
-  Layers,
-  Car,
 } from "lucide-react";
 import { getPublicListing, submitLead, trackPublicEvent } from "@/lib/public-listing.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
