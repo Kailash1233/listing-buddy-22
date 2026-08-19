@@ -79,7 +79,10 @@ function EditProperty() {
 
   async function setStatus(status: Property["status"]) {
     const { error } = await supabase.from("properties").update({ status }).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     void qc.invalidateQueries({ queryKey: ["property", id] });
     void qc.invalidateQueries({ queryKey: ["properties", broker!.id] });
     toast.success("Status updated");
@@ -87,7 +90,10 @@ function EditProperty() {
 
   async function remove() {
     const { error } = await supabase.from("properties").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     void qc.invalidateQueries({ queryKey: ["properties", broker!.id] });
     toast.success("Property deleted");
     navigate({ to: "/dashboard/properties" });

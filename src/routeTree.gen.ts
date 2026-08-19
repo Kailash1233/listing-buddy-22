@@ -15,6 +15,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard.properties.index'
+import { Route as DashboardPropertiesIdRouteImport } from './routes/dashboard.properties.$id'
 import { Route as DashboardPropertiesNewRouteImport } from './routes/dashboard.properties.new'
 import { Route as ApiPublicBrochureIdRouteImport } from './routes/api/public/brochure.$id'
 import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media.$'
@@ -50,6 +51,11 @@ const DashboardPropertiesIndexRoute =
     path: '/properties/',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardPropertiesIdRoute = DashboardPropertiesIdRouteImport.update({
+  id: '/properties/$id',
+  path: '/properties/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardPropertiesNewRoute = DashboardPropertiesNewRouteImport.update({
   id: '/properties/new',
   path: '/properties/new',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
   '/onboarding': typeof OnboardingRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
   '/dashboard/properties': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/onboarding': typeof OnboardingRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
   '/dashboard/properties/': typeof DashboardPropertiesIndexRoute
   '/api/public/brochure/$id': typeof ApiPublicBrochureIdRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/onboarding'
     | '/dashboard/'
+    | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
     | '/dashboard/properties/'
     | '/api/public/brochure/$id'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/onboarding'
     | '/dashboard'
+    | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
     | '/dashboard/properties'
     | '/api/public/brochure/$id'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/onboarding'
     | '/dashboard/'
+    | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
     | '/dashboard/properties/'
     | '/api/public/brochure/$id'
@@ -187,6 +199,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardPropertiesIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/properties/$id': {
+      id: '/dashboard/properties/$id'
+      path: '/properties/$id'
+      fullPath: '/dashboard/properties/$id'
+      preLoaderRoute: typeof DashboardPropertiesIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/properties/new': {
       id: '/dashboard/properties/new'
       path: '/properties/new'
@@ -213,12 +232,14 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardPropertiesIdRoute: typeof DashboardPropertiesIdRoute
   DashboardPropertiesNewRoute: typeof DashboardPropertiesNewRoute
   DashboardPropertiesIndexRoute: typeof DashboardPropertiesIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardPropertiesIdRoute: DashboardPropertiesIdRoute,
   DashboardPropertiesNewRoute: DashboardPropertiesNewRoute,
   DashboardPropertiesIndexRoute: DashboardPropertiesIndexRoute,
 }
