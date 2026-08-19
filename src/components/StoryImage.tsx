@@ -78,7 +78,7 @@ export async function buildStoryImage(
   // Background
   const bg = ctx.createLinearGradient(0, 0, W, H);
   bg.addColorStop(0, "#1e1b4b");
-  bg.addColorStop(1, "#4338ca");
+  bg.addColorStop(1, "#1a2a8a");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
 
