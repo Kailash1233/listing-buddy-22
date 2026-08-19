@@ -580,7 +580,6 @@ export type Database = {
     }
     Functions: {
       accept_agency_invite: { Args: never; Returns: Json }
-      agency_owner_of: { Args: { _broker: string }; Returns: string }
       hit_rate_limit: {
         Args: {
           _bucket: string
@@ -594,7 +593,6 @@ export type Database = {
       pending_agency_invite: { Args: never; Returns: Json }
       publish_property: { Args: { _property_id: string }; Returns: Json }
       remove_agency_member: { Args: { _member_id: string }; Returns: Json }
-      same_agency: { Args: { _a: string; _b: string }; Returns: boolean }
       track_property_event: {
         Args: {
           _event_type: Database["public"]["Enums"]["event_type"]
