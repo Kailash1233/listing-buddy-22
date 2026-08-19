@@ -16,7 +16,7 @@ import {
   Car,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { getPublicListing, trackPublicEvent } from "@/lib/public-listing.functions";
+import { getPublicListing, submitLead, trackPublicEvent } from "@/lib/public-listing.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
 import { formatINR, mediaUrl, photoPaths, waLink } from "@/lib/property";
 import { Button } from "@/components/ui/button";
@@ -292,21 +292,25 @@ function LeadForm({ property, brokerId }: { property: Property; brokerId: string
       return;
     }
     setSending(true);
-    const { error } = await supabase.from("leads").insert({
-      property_id: property.id,
-      broker_id: brokerId,
-      name: name.trim(),
-      phone: phone.replace(/\D/g, ""),
-      whatsapp_number: phone.replace(/\D/g, ""),
-      message: message.trim() || null,
-      budget_max: budget ? Number(budget.replace(/\D/g, "")) || null : null,
-    });
+    const digits = phone.replace(/\D/g, "");
+    const result = await submitLead({
+      data: {
+        propertyId: property.id,
+        name: name.trim(),
+        phone: digits,
+        message: message.trim() || null,
+        budgetMax: budget ? Number(budget.replace(/\D/g, "")) || null : null,
+      },
+    }).catch(() => null);
     setSending(false);
-    if (error) {
-      toast.error("Could not send your enquiry. Please try WhatsApp instead.");
+    if (!result?.ok) {
+      toast.error(
+        result?.reason === "rate_limited" || result?.reason === "duplicate"
+          ? "You've already sent an enquiry. Please WhatsApp the broker directly."
+          : "Could not send your enquiry. Please try WhatsApp instead.",
+      );
       return;
     }
-    void trackPublicEvent({ data: { propertyId: property.id, eventType: "enquiry_submit" } });
     setDone(true);
   }
 

@@ -46,10 +46,7 @@ function DashboardLayout() {
     if (session && !isLoading && broker === null) navigate({ to: "/onboarding" });
   }, [session, isLoading, broker, navigate]);
 
-  const inAgency = !!broker && (!!broker.agency_id || broker.account_type === "agency");
-  const nav: NavItem[] = inAgency
-    ? [...baseNav, teamNav, settingsNav]
-    : [...baseNav, settingsNav];
+  const nav: NavItem[] = [...baseNav, teamNav, settingsNav];
 
   if (loading || isLoading || !broker) {
     return (
