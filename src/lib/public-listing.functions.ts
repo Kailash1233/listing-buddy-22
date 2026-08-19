@@ -130,7 +130,7 @@ export const getPublicBrokerPage = createServerFn({ method: "GET" })
 
     const { data: broker } = await supabaseAdmin
       .from("brokers")
-      .select("id, name, agency_name, whatsapp_number, subdomain_slug")
+      .select("id, name, agency_name, phone, whatsapp_number, subdomain_slug, bio, photo_url")
       .eq("subdomain_slug", data.subdomain)
       .maybeSingle();
     if (!broker) return null;
