@@ -70,6 +70,7 @@ export type Database = {
           monthly_listing_pool: number
           plan: Database["public"]["Enums"]["agency_plan"]
           razorpay_subscription_id: string | null
+          seat_limit: number
           status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
         }
@@ -83,6 +84,7 @@ export type Database = {
           monthly_listing_pool?: number
           plan: Database["public"]["Enums"]["agency_plan"]
           razorpay_subscription_id?: string | null
+          seat_limit?: number
           status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
         }
@@ -96,6 +98,7 @@ export type Database = {
           monthly_listing_pool?: number
           plan?: Database["public"]["Enums"]["agency_plan"]
           razorpay_subscription_id?: string | null
+          seat_limit?: number
           status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
         }
@@ -122,8 +125,6 @@ export type Database = {
           listing_credits_remaining: number
           name: string
           phone: string
-          plan: Database["public"]["Enums"]["broker_plan"]
-          property_limit: number
           subdomain_slug: string
           updated_at: string
           whatsapp_number: string
@@ -140,8 +141,6 @@ export type Database = {
           listing_credits_remaining?: number
           name?: string
           phone?: string
-          plan?: Database["public"]["Enums"]["broker_plan"]
-          property_limit?: number
           subdomain_slug: string
           updated_at?: string
           whatsapp_number?: string
@@ -158,8 +157,6 @@ export type Database = {
           listing_credits_remaining?: number
           name?: string
           phone?: string
-          plan?: Database["public"]["Enums"]["broker_plan"]
-          property_limit?: number
           subdomain_slug?: string
           updated_at?: string
           whatsapp_number?: string
@@ -556,12 +553,48 @@ export type Database = {
           },
         ]
       }
+      rate_limit_hits: {
+        Row: {
+          bucket: string
+          created_at: string
+          id: string
+          subject: string
+        }
+        Insert: {
+          bucket: string
+          created_at?: string
+          id?: string
+          subject: string
+        }
+        Update: {
+          bucket?: string
+          created_at?: string
+          id?: string
+          subject?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      accept_agency_invite: { Args: never; Returns: Json }
+      agency_owner_of: { Args: { _broker: string }; Returns: string }
+      hit_rate_limit: {
+        Args: {
+          _bucket: string
+          _limit: number
+          _subject: string
+          _window_seconds: number
+        }
+        Returns: boolean
+      }
+      invite_agency_member: { Args: { _email: string }; Returns: Json }
+      pending_agency_invite: { Args: never; Returns: Json }
       publish_property: { Args: { _property_id: string }; Returns: Json }
+      remove_agency_member: { Args: { _member_id: string }; Returns: Json }
+      same_agency: { Args: { _a: string; _b: string }; Returns: boolean }
       track_property_event: {
         Args: {
           _event_type: Database["public"]["Enums"]["event_type"]
@@ -574,7 +607,6 @@ export type Database = {
       account_type: "solo" | "agency"
       agency_plan: "starter_agency" | "growth_agency"
       agency_seat_role: "owner" | "member"
-      broker_plan: "free" | "starter" | "pro"
       credit_pack: "starter" | "launch"
       event_type: "view" | "whatsapp_click" | "call_click" | "enquiry_submit"
       lead_status: "new" | "contacted" | "site_visit" | "closed" | "lost"
@@ -720,7 +752,6 @@ export const Constants = {
       account_type: ["solo", "agency"],
       agency_plan: ["starter_agency", "growth_agency"],
       agency_seat_role: ["owner", "member"],
-      broker_plan: ["free", "starter", "pro"],
       credit_pack: ["starter", "launch"],
       event_type: ["view", "whatsapp_click", "call_click", "enquiry_submit"],
       lead_status: ["new", "contacted", "site_visit", "closed", "lost"],
