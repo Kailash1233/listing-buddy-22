@@ -99,6 +99,29 @@ function SettingsPage() {
           <Label htmlFor="agency">Agency</Label>
           <Input id="agency" value={agency} onChange={(e) => setAgency(e.target.value)} />
         </div>
+        <PhotoUploader
+          userId={broker.id}
+          paths={photo}
+          onChange={setPhoto}
+          single
+          max={1}
+          label="Profile photo"
+        />
+        <div className="space-y-1.5">
+          <Label htmlFor="bio">Short bio</Label>
+          <Textarea
+            id="bio"
+            rows={4}
+            maxLength={600}
+            placeholder="A few sentences about you — areas you cover, years of experience, what buyers can expect."
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            Shown on your public agent page. {600 - bio.length} characters left.
+          </p>
+        </div>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="wa">WhatsApp number</Label>
