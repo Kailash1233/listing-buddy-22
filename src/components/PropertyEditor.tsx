@@ -237,9 +237,10 @@ export function PropertyEditor({
         rera_status: draft.rera_number ? ("provided_unverified" as const) : ("not_provided" as const),
         photos: draft.photos,
         floor_plan_url: draft.floor_plan[0] ?? null,
-        status: publish ? ("active" as const) : property?.status ?? ("draft" as const),
+        status: property?.status ?? ("draft" as const),
       };
 
+      let saved: Property;
       if (property) {
         const { data, error } = await supabase
           .from("properties")
@@ -248,7 +249,7 @@ export function PropertyEditor({
           .select()
           .single();
         if (error) throw error;
-        onSaved(data as Property, publish);
+        saved = data as Property;
       } else {
         let slug = slugify(
           [draft.bhk && `${draft.bhk}bhk`, draft.property_type, draft.locality]
@@ -268,8 +269,31 @@ export function PropertyEditor({
           .select()
           .single();
         if (error) throw error;
-        onSaved(data as Property, publish);
+        saved = data as Property;
       }
+
+      if (publish && saved.status !== "active") {
+        // Credits/pool are enforced server-side; the client never grants publish rights.
+        const { data: result, error: rpcError } = await supabase.rpc("publish_property", {
+          _property_id: saved.id,
+        });
+        if (rpcError) throw rpcError;
+        const outcome = (result ?? {}) as { ok?: boolean; reason?: string };
+        if (!outcome.ok) {
+          await qc.invalidateQueries({ queryKey: ["broker"] });
+          toast.error(PUBLISH_ERRORS[outcome.reason ?? ""] ?? "Could not publish this listing.");
+          if (outcome.reason === "no_credits" || outcome.reason === "pool_exhausted") {
+            navigate({ to: "/pricing" });
+          }
+          onSaved(saved, false);
+          return;
+        }
+        saved = { ...saved, status: "active" };
+        await qc.invalidateQueries({ queryKey: ["broker"] });
+      }
+
+      onSaved(saved, publish && saved.status === "active");
+
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not save");
     } finally {
