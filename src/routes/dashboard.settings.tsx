@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -22,12 +22,6 @@ export const Route = createFileRoute("/dashboard/settings")({
   }),
   component: SettingsPage,
 });
-
-const PLANS = [
-  { id: "free", name: "Free", price: "₹0", limit: "3 listings", perks: ["Property pages", "WhatsApp share", "Lead inbox"] },
-  { id: "starter", name: "Starter", price: "₹499/mo", limit: "25 listings", perks: ["Everything in Free", "PDF brochures", "Listing analytics"] },
-  { id: "pro", name: "Pro", price: "₹999/mo", limit: "Unlimited listings", perks: ["Everything in Starter", "Priority AI copy", "Custom branding"] },
-];
 
 function SettingsPage() {
   const { data: broker } = useBroker();
