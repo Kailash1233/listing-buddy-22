@@ -134,11 +134,7 @@ function EditProperty() {
             <MessageCircle className="size-4" /> Share on WhatsApp
           </a>
         </Button>
-        <Button asChild variant="outline" size="sm">
-          <a href={`/api/public/brochure/${property.id}`} target="_blank" rel="noreferrer">
-            <Download className="size-4" /> Brochure PDF
-          </a>
-        </Button>
+        <BrochureButton propertyId={property.id} slug={property.slug} />
         <StoryImageButton
           property={property}
           brokerName={broker.agency_name || broker.name}
