@@ -15,7 +15,6 @@ import {
   Layers,
   Car,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { getPublicListing, submitLead, trackPublicEvent } from "@/lib/public-listing.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
 import { formatINR, mediaUrl, photoPaths, waLink } from "@/lib/property";
@@ -236,7 +235,7 @@ function PublicProperty() {
           </Button>
         </section>
 
-        <LeadForm property={property} brokerId={broker.id} />
+        <LeadForm property={property} />
 
         <section className="mt-6 flex flex-wrap gap-2">
           <Button asChild variant="outline" size="sm">
@@ -278,7 +277,7 @@ function PublicProperty() {
   );
 }
 
-function LeadForm({ property, brokerId }: { property: Property; brokerId: string }) {
+function LeadForm({ property }: { property: Property }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");

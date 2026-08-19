@@ -25,6 +25,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { PropertyEditor } from "@/components/PropertyEditor";
+import { StoryImageButton } from "@/components/StoryImage";
 
 export const Route = createFileRoute("/dashboard/properties/$id")({
   head: () => ({
@@ -138,6 +139,13 @@ function EditProperty() {
             <Download className="size-4" /> Brochure PDF
           </a>
         </Button>
+        <StoryImageButton
+          property={property}
+          brokerName={broker.agency_name || broker.name}
+          contact={broker.whatsapp_number}
+          siteUrl={`${typeof window !== "undefined" ? window.location.origin : ""}${url}`}
+          className="h-8 gap-1.5 px-3 text-sm"
+        />
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="ghost" size="sm" className="text-destructive">
