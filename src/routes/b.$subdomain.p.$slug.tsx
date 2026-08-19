@@ -16,6 +16,7 @@ import {
   Car,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getPublicListing, trackPublicEvent } from "@/lib/public-listing.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
 import { formatINR, mediaUrl, photoPaths, waLink } from "@/lib/property";
 import { Button } from "@/components/ui/button";
@@ -83,10 +84,7 @@ function PublicProperty() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    void supabase.rpc("track_property_event", {
-      _property_id: property.id,
-      _event_type: "view",
-    });
+    void trackPublicEvent({ data: { propertyId: property.id, eventType: "view" } });
   }, [property.id]);
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -102,7 +100,7 @@ function PublicProperty() {
   ].filter(Boolean) as Array<{ icon: typeof BedDouble; label: string }>;
 
   const track = (t: "whatsapp_click" | "call_click") =>
-    void supabase.rpc("track_property_event", { _property_id: property.id, _event_type: t });
+    void trackPublicEvent({ data: { propertyId: property.id, eventType: t } });
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -308,10 +306,7 @@ function LeadForm({ property, brokerId }: { property: Property; brokerId: string
       toast.error("Could not send your enquiry. Please try WhatsApp instead.");
       return;
     }
-    void supabase.rpc("track_property_event", {
-      _property_id: property.id,
-      _event_type: "enquiry_submit",
-    });
+    void trackPublicEvent({ data: { propertyId: property.id, eventType: "enquiry_submit" } });
     setDone(true);
   }
 
