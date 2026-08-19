@@ -156,15 +156,12 @@ function PublicProperty() {
           </p>
         </section>
 
-        <section className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-4">
+        <section className="mt-6 grid grid-cols-2 overflow-hidden rounded-2xl border border-border bg-card sm:grid-cols-4">
           {facts.map((f) => (
-            <div key={f.label} className="bg-card p-4">
+            <div key={f.label} className="border-b border-r border-border p-4">
               <p className="eyebrow text-muted-foreground">{f.label}</p>
               <p className="mt-1 text-base font-bold capitalize">{f.value}</p>
             </div>
-          ))}
-          {Array.from({ length: (4 - (facts.length % 4)) % 4 }).map((_, i) => (
-            <div key={`pad-${i}`} className="hidden bg-card sm:block" />
           ))}
         </section>
 
