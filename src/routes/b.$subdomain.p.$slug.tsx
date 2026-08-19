@@ -26,23 +26,16 @@ import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/b/$subdomain/p/$slug")({
   loader: async ({ params }) => {
-    const { data: broker } = await supabase
-      .from("brokers")
-      .select("*")
-      .eq("subdomain_slug", params.subdomain)
-      .maybeSingle();
-    if (!broker) throw notFound();
-
-    const { data: property } = await supabase
-      .from("properties")
-      .select("*")
-      .eq("broker_id", broker.id)
-      .eq("slug", params.slug)
-      .maybeSingle();
-    if (!property) throw notFound();
-
-    return { broker: broker as Broker, property: property as Property };
+    const result = await getPublicListing({
+      data: { subdomain: params.subdomain, slug: params.slug },
+    });
+    if (!result) throw notFound();
+    return {
+      broker: result.broker as unknown as Broker,
+      property: result.property as Property,
+    };
   },
+
   head: ({ loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Property unavailable" }, { name: "robots", content: "noindex" }] };
