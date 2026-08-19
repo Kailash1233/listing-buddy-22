@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { Building2, Home, Inbox, Settings, LogOut, Plus } from "lucide-react";
+import { Building2, Home, Inbox, Settings, LogOut, Plus, Users } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useBroker } from "@/hooks/useBroker";
 import { Button } from "@/components/ui/button";
@@ -11,17 +11,26 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
 });
 
-const nav: Array<{
-  to: "/dashboard" | "/dashboard/properties" | "/dashboard/leads" | "/dashboard/settings";
+type NavItem = {
+  to:
+    | "/dashboard"
+    | "/dashboard/properties"
+    | "/dashboard/leads"
+    | "/dashboard/team"
+    | "/dashboard/settings";
   label: string;
   icon: typeof Home;
   exact?: boolean;
-}> = [
+};
+
+const baseNav: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: Home, exact: true },
   { to: "/dashboard/properties", label: "Properties", icon: Building2 },
   { to: "/dashboard/leads", label: "Leads", icon: Inbox },
-  { to: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
+
+const teamNav: NavItem = { to: "/dashboard/team", label: "Team", icon: Users };
+const settingsNav: NavItem = { to: "/dashboard/settings", label: "Settings", icon: Settings };
 
 function DashboardLayout() {
   const { session, loading, signOut } = useAuth();
@@ -36,6 +45,11 @@ function DashboardLayout() {
   useEffect(() => {
     if (session && !isLoading && broker === null) navigate({ to: "/onboarding" });
   }, [session, isLoading, broker, navigate]);
+
+  const inAgency = !!broker && (!!broker.agency_id || broker.account_type === "agency");
+  const nav: NavItem[] = inAgency
+    ? [...baseNav, teamNav, settingsNav]
+    : [...baseNav, settingsNav];
 
   if (loading || isLoading || !broker) {
     return (
@@ -101,7 +115,9 @@ function DashboardLayout() {
         <Outlet />
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-border bg-card md:hidden">
+      <nav className={`fixed inset-x-0 bottom-0 z-30 grid border-t border-border bg-card md:hidden ${
+          nav.length === 5 ? "grid-cols-5" : "grid-cols-4"
+        }`}>
         {nav.map((item) => {
           const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
           return (
