@@ -1,6 +1,9 @@
+import { useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
+  ChevronLeft,
+  Check,
   FileText,
   Inbox,
   MessageCircle,
@@ -11,7 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SOLO_PACKS, isOfferLive, rupees } from "@/lib/pricing";
-import { ArrowButton, Eyebrow, IconBadge } from "@/components/marketing";
+import { cn } from "@/lib/utils";
 import home4 from "@/assets/home-4.png.asset.json";
 import home5 from "@/assets/home-5.png.asset.json";
 import home6 from "@/assets/home-6.png.asset.json";
@@ -41,27 +44,16 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-/**
- * Social-proof numbers. Keep these honest — replace the placeholders with real
- * counts as they grow. A dash renders when a number isn't ready to be claimed.
- */
-const STATS: Array<{ value: string | null; label: string }> = [
-  { value: null, label: "Properties listed" },
-  { value: null, label: "Brokers onboarded" },
-  { value: null, label: "Leads captured" },
-];
-
-const EXAMPLES = [
-  { img: home4.url, title: "4 BHK villa, Thoraipakkam", price: "₹2.4 Cr", meta: "3200 sqft · East" },
-  { img: home5.url, title: "3 BHK duplex, Perungudi", price: "₹1.15 Cr", meta: "1850 sqft · North" },
-  { img: home6.url, title: "2 BHK home, Adambakkam", price: "₹78 Lakhs", meta: "1100 sqft · West" },
-  { img: home7.url, title: "3 BHK flat, Velachery", price: "₹1.05 Cr", meta: "1420 sqft · East" },
-  { img: home8.url, title: "4 BHK house, Medavakkam", price: "₹1.9 Cr", meta: "2600 sqft · South" },
-];
+const TOTAL = 5;
 
 function Landing() {
+  const [step, setStep] = useState(0);
+  const touchX = useRef<number | null>(null);
+
+  const go = (next: number) => setStep(Math.min(TOTAL - 1, Math.max(0, next)));
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-muted">
       <header className="sticky top-0 z-30 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 text-lg font-extrabold tracking-tight">
@@ -71,9 +63,13 @@ function Landing() {
             Plotly
           </Link>
           <nav className="flex items-center gap-1 sm:gap-4">
-            <a href="#how" className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:block">
+            <button
+              type="button"
+              onClick={() => go(2)}
+              className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:block"
+            >
               How it works
-            </a>
+            </button>
             <Link
               to="/pricing"
               className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:block"
@@ -92,276 +88,359 @@ function Landing() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="navy-gradient relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-5 pb-0 pt-16 text-center md:pt-24">
-          <Eyebrow className="text-navy-foreground/60">Built for independent brokers in Chennai</Eyebrow>
-          <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-[1.05] md:text-6xl">
-            Don&apos;t waste another lead
-            <br className="hidden sm:block" /> on a WhatsApp photo dump
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-base text-navy-foreground/70 md:text-lg">
-            Paste the same rough note you&apos;d send a buyer. Plotly writes the listing, builds a
-            mobile property page, a share message and a PDF brochure — in seconds.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button asChild size="lg" variant="secondary" className="bg-background text-foreground hover:bg-background/90">
-              <Link to="/auth" search={{ mode: "signup" }}>
-                Start free <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="ghost"
-              className="border border-navy-foreground/25 text-navy-foreground hover:bg-navy-foreground/10 hover:text-navy-foreground"
+      <main className="flex flex-1 items-start justify-center px-4 py-6 sm:py-10">
+        <section
+          className="relative flex w-full max-w-[420px] flex-col overflow-hidden rounded-3xl border border-border bg-background shadow-[0_30px_60px_-40px_rgba(0,0,0,0.45)]"
+          onTouchStart={(e) => {
+            touchX.current = e.touches[0]?.clientX ?? null;
+          }}
+          onTouchEnd={(e) => {
+            if (touchX.current === null) return;
+            const delta = (e.changedTouches[0]?.clientX ?? touchX.current) - touchX.current;
+            if (Math.abs(delta) > 60) go(delta < 0 ? step + 1 : step - 1);
+            touchX.current = null;
+          }}
+        >
+          {/* Card top bar: back + progress dots */}
+          <div className="relative flex items-center justify-center px-4 pb-2 pt-4">
+            {step > 0 ? (
+              <button
+                type="button"
+                aria-label="Go back"
+                onClick={() => go(step - 1)}
+                className="absolute left-3 grid size-9 place-items-center rounded-full text-foreground transition-colors hover:bg-muted"
+              >
+                <ChevronLeft className="size-5" />
+              </button>
+            ) : null}
+            <div className="flex items-center gap-1.5">
+              {Array.from({ length: TOTAL }).map((_, i) => (
+                <span
+                  key={i}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all duration-250",
+                    i === step ? "w-5 bg-primary" : "w-1.5 bg-border",
+                  )}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Slides */}
+          <div className="overflow-hidden">
+            <div
+              className="flex transition-transform duration-250 ease-out"
+              style={{ transform: `translateX(-${step * 100}%)` }}
             >
-              <a href="#examples">See a live example</a>
-            </Button>
-          </div>
-          <p className="mt-4 text-sm text-navy-foreground/55">
-            2 free listing credits. No card needed.
-          </p>
-
-          {/* Product on a stage */}
-          <div className="stage-gradient relative mt-14 pb-16">
-            <div className="mx-auto w-full max-w-sm overflow-hidden rounded-3xl bg-card text-left text-card-foreground shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)]">
-              <img
-                src={home4.url}
-                alt="Example Plotly property page cover"
-                className="h-44 w-full object-cover"
-              />
-              <div className="space-y-3 p-5">
-                <div className="flex items-center justify-between">
-                  <p className="text-xl font-extrabold text-primary">₹85 Lakhs</p>
-                  <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">
-                    2 BHK
-                  </span>
-                </div>
-                <p className="text-sm font-semibold">Bright 2BHK in Anna Nagar — 1200 sqft</p>
-                <div className="grid grid-cols-3 gap-2 text-center text-[11px] text-muted-foreground">
-                  {[
-                    { icon: BedDouble, l: "2 BHK" },
-                    { icon: Ruler, l: "1200 sqft" },
-                    { icon: Compass, l: "East" },
-                  ].map((s) => (
-                    <div key={s.l} className="rounded-xl bg-muted px-2 py-2.5">
-                      <s.icon className="mx-auto mb-1 size-3.5" />
-                      {s.l}
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-2 pt-1">
-                  <div className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground">
-                    <MessageCircle className="size-3.5" /> WhatsApp
-                  </div>
-                  <div className="flex-1 rounded-xl border border-border px-3 py-2 text-center text-xs font-semibold">
-                    I&apos;m interested
-                  </div>
-                </div>
-              </div>
+              <Slide active={step === 0}>
+                <HeroPage />
+              </Slide>
+              <Slide active={step === 1}>
+                <WhatYouGetPage />
+              </Slide>
+              <Slide active={step === 2}>
+                <HowItWorksPage />
+              </Slide>
+              <Slide active={step === 3}>
+                <IncludedPage />
+              </Slide>
+              <Slide active={step === 4}>
+                <PricingPage />
+              </Slide>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Feature tiles */}
-      <section className="mx-auto max-w-6xl px-5 py-16 md:py-24">
-        <Eyebrow className="text-primary">Everything in one link</Eyebrow>
-        <h2 className="mt-3 max-w-xl text-3xl font-extrabold md:text-4xl">
-          One listing in. Four ways to sell it out.
-        </h2>
+          {/* Sticky CTA */}
+          <div className="sticky bottom-0 border-t border-border bg-background/95 p-4 backdrop-blur">
+            {step < TOTAL - 1 ? (
+              <Button size="lg" className="w-full rounded-full" onClick={() => go(step + 1)}>
+                {["Next", "See How It Works", "See Pricing", "See Plans"][step]}
+                <ArrowRight className="size-4" />
+              </Button>
+            ) : (
+              <Button asChild size="lg" className="w-full rounded-full">
+                <Link to="/auth" search={{ mode: "signup" }}>
+                  Start Free <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+            )}
+            <PoweredByAdszoo className="pt-3" />
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
 
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
-          <article className="tile navy-gradient group">
-            <IconBadge icon={Sparkles} className="bg-navy-foreground/12 text-navy-foreground" />
-            <h3 className="mt-6 text-2xl font-bold">AI Quick Add</h3>
-            <p className="mt-2 max-w-sm text-sm text-navy-foreground/70">
-              Paste a rough WhatsApp note. Get a structured, ready-to-edit listing.
-            </p>
-            <div className="mt-auto flex justify-end pt-6">
-              <ArrowButton className="text-navy-foreground" />
-            </div>
-          </article>
+function Slide({ children, active }: { children: React.ReactNode; active: boolean }) {
+  return (
+    <div
+      aria-hidden={!active}
+      className={cn(
+        "w-full shrink-0 px-5 pb-6 pt-2 transition-opacity duration-250",
+        active ? "opacity-100" : "opacity-0",
+      )}
+    >
+      {children}
+    </div>
+  );
+}
 
-          <article className="tile group bg-peach text-peach-foreground">
-            <IconBadge icon={MessageCircle} className="bg-peach-foreground/10 text-peach-foreground" />
-            <h3 className="mt-6 text-2xl font-bold">WhatsApp-ready</h3>
-            <p className="mt-2 max-w-sm text-sm text-peach-foreground/75">
-              A pre-written share message plus a 1080×1920 Story image for every listing.
-            </p>
-            <div className="mt-auto flex justify-end pt-6">
-              <ArrowButton className="text-peach-foreground" />
-            </div>
-          </article>
+/* ---------------- Page 1 — Hero ---------------- */
 
-          <article className="tile group justify-end text-white">
-            <img
-              src={home7.url}
-              alt="Modern Chennai apartment interior"
-              loading="lazy"
-              className="absolute inset-0 size-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-            <div className="relative">
-              <IconBadge icon={FileText} className="bg-white/15 text-white" />
-              <h3 className="mt-6 text-2xl font-bold">PDF brochures</h3>
-              <p className="mt-2 max-w-sm text-sm text-white/80">
-                A clean one-pager generated from the same listing data — cached and instant.
-              </p>
-              <div className="mt-6 flex justify-end">
-                <ArrowButton className="text-white" />
-              </div>
-            </div>
-          </article>
+function HeroPage() {
+  return (
+    <div className="text-center">
+      <span className="eyebrow inline-block rounded-full bg-primary/10 px-3 py-1 text-primary">
+        Built for Chennai brokers
+      </span>
+      <h1 className="mt-4 text-[1.75rem] font-extrabold leading-[1.1]">
+        Don&apos;t waste another lead on a WhatsApp photo dump
+      </h1>
+      <p className="mt-3 text-sm text-muted-foreground">
+        Paste the same rough note you&apos;d send a buyer. Plotly writes the listing, builds a
+        property page, a share message and a PDF brochure — in seconds.
+      </p>
 
-          <article className="tile group bg-secondary text-secondary-foreground">
-            <IconBadge icon={Inbox} />
-            <h3 className="mt-6 text-2xl font-bold">Lead inbox</h3>
-            <p className="mt-2 max-w-sm text-sm text-secondary-foreground/75">
-              Every enquiry lands in one place, with views and WhatsApp clicks tracked per listing.
-            </p>
-            <div className="mt-auto flex justify-end pt-6">
-              <ArrowButton className="text-secondary-foreground" />
-            </div>
-          </article>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section id="how" className="border-y border-border bg-card">
-        <div className="mx-auto max-w-6xl px-5 py-16 md:py-24">
-          <Eyebrow className="text-primary">How it works</Eyebrow>
-          <h2 className="mt-3 text-3xl font-extrabold md:text-4xl">Three steps, under a minute</h2>
-          <div className="mt-10 grid gap-8 md:grid-cols-3">
+      <div className="mx-auto mt-6 w-full overflow-hidden rounded-3xl border border-border bg-card text-left text-card-foreground">
+        <img src={home4.url} alt="Example Plotly property page cover" className="h-40 w-full object-cover" />
+        <div className="space-y-3 p-4">
+          <div className="flex items-center justify-between">
+            <p className="text-xl font-extrabold text-primary">₹85 Lakhs</p>
+            <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">
+              2 BHK
+            </span>
+          </div>
+          <p className="text-sm font-semibold">Bright 2BHK in Anna Nagar — 1200 sqft</p>
+          <div className="grid grid-cols-3 gap-2 text-center text-[11px] text-muted-foreground">
             {[
-              {
-                n: "01",
-                t: "Paste your listing",
-                d: "Drop in the same rough note you'd send on WhatsApp. Add photos. That's the whole input.",
-                img: home5.url,
-              },
-              {
-                n: "02",
-                t: "AI builds the page",
-                d: "Structured details, a clean write-up and a mobile-first property page — fully editable.",
-                img: home6.url,
-              },
-              {
-                n: "03",
-                t: "Share and capture leads",
-                d: "Send the link, post the Story image, download the brochure. Enquiries land in your dashboard.",
-                img: home8.url,
-              },
+              { icon: BedDouble, l: "2 BHK" },
+              { icon: Ruler, l: "1200 sqft" },
+              { icon: Compass, l: "East" },
             ].map((s) => (
-              <div key={s.n}>
-                <div className="overflow-hidden rounded-2xl border border-border">
-                  <img src={s.img} alt="" loading="lazy" className="aspect-[16/10] w-full object-cover" />
-                </div>
-                <div className="mt-4 flex items-center gap-3">
-                  <span className="grid size-8 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                    {s.n}
-                  </span>
-                  <h3 className="text-lg font-bold">{s.t}</h3>
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">{s.d}</p>
+              <div key={s.l} className="rounded-xl bg-muted px-2 py-2.5">
+                <s.icon className="mx-auto mb-1 size-3.5" />
+                {s.l}
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="mx-auto max-w-6xl px-5 py-14">
-        <div className="grid gap-6 rounded-3xl bg-muted px-6 py-10 text-center sm:grid-cols-3">
-          {STATS.map((s) => (
-            <div key={s.label}>
-              <p className="text-4xl font-extrabold tracking-tight text-primary">{s.value ?? "—"}</p>
-              <p className="eyebrow mt-2 text-muted-foreground">{s.label}</p>
+          <div className="flex gap-2 pt-1">
+            <div className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground">
+              <MessageCircle className="size-3.5" /> WhatsApp
             </div>
-          ))}
+            <div className="flex-1 rounded-xl border border-border px-3 py-2 text-center text-xs font-semibold">
+              I&apos;m interested
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Example listings */}
-      <section id="examples" className="mx-auto max-w-6xl px-5 py-10 md:py-16">
-        <Eyebrow className="text-primary">Live examples</Eyebrow>
-        <h2 className="mt-3 text-3xl font-extrabold md:text-4xl">What a published page looks like</h2>
-        <div className="no-scrollbar mt-8 flex snap-x gap-4 overflow-x-auto pb-2">
-          {EXAMPLES.map((e) => (
-            <article
-              key={e.title}
-              className="w-[17rem] shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-card"
-            >
-              <img src={e.img} alt={e.title} loading="lazy" className="aspect-[4/3] w-full object-cover" />
-              <div className="p-4">
-                <p className="text-lg font-extrabold text-primary">{e.price}</p>
-                <p className="mt-1 text-sm font-semibold leading-snug">{e.title}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{e.meta}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+      <p className="mt-4 text-xs text-muted-foreground">2 free listing credits · No card needed</p>
+    </div>
+  );
+}
 
-      {/* Pricing preview */}
-      <section className="mx-auto max-w-6xl px-5 py-16 md:py-24">
-        <Eyebrow className="text-primary">Pricing</Eyebrow>
-        <h2 className="mt-3 text-3xl font-extrabold md:text-4xl">Pay for listings, not for months</h2>
-        <p className="mt-2 max-w-xl text-muted-foreground">
-          Start with 2 free listings. After that, one-time packs — credits never expire. Agencies get
-          a shared monthly pool.
-        </p>
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {[SOLO_PACKS.free, SOLO_PACKS.starter, SOLO_PACKS.launch].map((pack) => (
+/* ---------------- Page 2 — What you get ---------------- */
+
+const FEATURES = [
+  { icon: Sparkles, t: "AI Quick Add", d: "Paste a rough note, get a structured listing" },
+  { icon: MessageCircle, t: "WhatsApp-ready", d: "Pre-written share message + Story image" },
+  { icon: FileText, t: "PDF brochures", d: "Clean one-pager, generated instantly" },
+  { icon: Inbox, t: "Lead inbox", d: "Every enquiry in one place, views tracked" },
+];
+
+function WhatYouGetPage() {
+  return (
+    <div>
+      <h2 className="text-2xl font-extrabold leading-tight">One listing in. Four ways to sell it out.</h2>
+      <ul className="mt-6 space-y-3">
+        {FEATURES.map((f) => (
+          <li key={f.t} className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+              <f.icon className="size-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="font-bold">{f.t}</p>
+              <p className="mt-0.5 text-sm text-muted-foreground">{f.d}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/* ---------------- Page 3 — How it works ---------------- */
+
+const STEPS = [
+  {
+    tab: "Paste Listing",
+    n: "01",
+    t: "Paste your listing",
+    d: "Drop in the rough note you'd send on WhatsApp, add photos.",
+    img: home5.url,
+  },
+  {
+    tab: "AI Builds Page",
+    n: "02",
+    t: "AI builds the page",
+    d: "Structured details, a clean write-up and a mobile-first page — fully editable.",
+    img: home6.url,
+  },
+  {
+    tab: "Share & Capture",
+    n: "03",
+    t: "Share and capture",
+    d: "Send the link, post the Story, download the brochure. Leads land in your dashboard.",
+    img: home8.url,
+  },
+];
+
+function HowItWorksPage() {
+  const [tab, setTab] = useState(0);
+  const s = STEPS[tab] ?? STEPS[0]!;
+  return (
+    <div>
+      <h2 className="text-2xl font-extrabold leading-tight">Three steps, under a minute</h2>
+      <div className="mt-5 grid grid-cols-3 gap-1 rounded-full bg-muted p-1">
+        {STEPS.map((x, i) => (
+          <button
+            key={x.tab}
+            type="button"
+            onClick={() => setTab(i)}
+            className={cn(
+              "rounded-full px-2 py-2 text-[11px] font-semibold transition-colors",
+              i === tab ? "bg-background text-foreground shadow-sm" : "text-muted-foreground",
+            )}
+          >
+            {x.tab}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-5 overflow-hidden rounded-2xl border border-border">
+        <img src={s.img} alt={s.t} loading="lazy" className="aspect-[16/10] w-full object-cover" />
+      </div>
+
+      <ol className="mt-5 space-y-3">
+        {STEPS.map((x, i) => (
+          <li
+            key={x.n}
+            className={cn(
+              "flex gap-3 rounded-2xl border p-3 transition-colors",
+              i === tab ? "border-primary/40 bg-primary/5" : "border-border bg-card",
+            )}
+          >
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">
+              {x.n}
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-bold">{x.t}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{x.d}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+/* ---------------- Page 4 — Everything included ---------------- */
+
+const CHECKS = ["AI Quick Add", "WhatsApp share", "PDF brochure", "Lead inbox", "No card needed"];
+
+function IncludedPage() {
+  return (
+    <div>
+      <h2 className="text-2xl font-extrabold leading-tight">Start with 2 free listings</h2>
+
+      <div className="relative mx-auto mt-6 h-52 w-full max-w-[300px]">
+        {[home7.url, home6.url, home4.url].map((src, i) => (
+          <img
+            key={src}
+            src={src}
+            alt=""
+            loading="lazy"
+            className="absolute top-0 h-52 w-32 rounded-2xl border border-border object-cover shadow-lg"
+            style={{
+              left: `${i * 28 + 8}%`,
+              zIndex: i,
+              transform: `rotate(${(i - 1) * 6}deg)`,
+            }}
+          />
+        ))}
+      </div>
+
+      <ul className="mt-6 space-y-2">
+        {CHECKS.map((c) => (
+          <li key={c} className="flex items-center gap-3 rounded-xl bg-muted px-4 py-3 text-sm font-semibold">
+            <Check className="size-4 shrink-0 text-primary" />
+            {c}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/* ---------------- Page 5 — Pricing ---------------- */
+
+function PricingPage() {
+  const packs = [SOLO_PACKS.free, SOLO_PACKS.starter, SOLO_PACKS.launch];
+  return (
+    <div>
+      <h2 className="text-2xl font-extrabold leading-tight">Pay for listings, not for months</h2>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Start with 2 free listings. After that, one-time packs — credits never expire.
+      </p>
+
+      <div className="mt-5 space-y-3">
+        {packs.map((pack) => {
+          const offer = pack.compareAtPaise && isOfferLive(pack);
+          const off = offer
+            ? Math.round((1 - pack.amountPaise / (pack.compareAtPaise as number)) * 100)
+            : null;
+          return (
             <div
               key={pack.id}
-              className={`rounded-3xl border p-6 ${
-                pack.id === "launch" ? "border-primary bg-primary/5" : "border-border bg-card"
-              }`}
+              className={cn(
+                "rounded-2xl border p-4",
+                pack.id === "launch" ? "border-primary bg-primary/5" : "border-border bg-card",
+              )}
             >
-              <h3 className="font-bold">{pack.name}</h3>
-              <p className="mt-3 flex items-baseline gap-2 text-3xl font-extrabold">
-                {rupees(pack.amountPaise)}
-                {pack.compareAtPaise && isOfferLive(pack) ? (
-                  <span className="text-sm font-medium text-muted-foreground line-through">
-                    {rupees(pack.compareAtPaise)}
-                  </span>
-                ) : null}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {pack.credits} listings · {pack.perListingLabel}
-              </p>
-              <Button
-                asChild
-                variant={pack.id === "launch" ? "default" : "outline"}
-                className="mt-6 w-full"
-              >
-                <Link to="/pricing">{pack.purchasable ? "See pack details" : "Start free"}</Link>
-              </Button>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-bold">{pack.name}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {pack.credits} listings
+                    {pack.perListingLabel !== "—" ? ` · ${pack.perListingLabel}` : ""}
+                  </p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="text-xl font-extrabold">{rupees(pack.amountPaise)}</p>
+                  {offer ? (
+                    <p className="text-xs text-muted-foreground line-through">
+                      {rupees(pack.compareAtPaise as number)}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+              {off ? (
+                <span className="mt-3 inline-block rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold text-primary-foreground">
+                  {off}% OFF
+                </span>
+              ) : null}
             </div>
-          ))}
-        </div>
-      </section>
+          );
+        })}
+      </div>
 
-      {/* Footer CTA */}
-      <section className="mx-auto max-w-6xl px-5 pb-16">
-        <div className="navy-gradient rounded-3xl px-6 py-14 text-center">
-          <h2 className="mx-auto max-w-2xl text-3xl font-extrabold md:text-4xl">
-            Your next listing could be a link instead of ten blurry photos.
-          </h2>
-          <Button asChild size="lg" variant="secondary" className="mt-7 bg-background text-foreground hover:bg-background/90">
-            <Link to="/auth" search={{ mode: "signup" }}>
-              Start free <ArrowRight className="size-4" />
-            </Link>
-          </Button>
-        </div>
-      </section>
-
-      <footer className="border-t border-border py-10 text-center text-sm text-muted-foreground">
-        Plotly · Property microsites for brokers · Chennai
-        <PoweredByAdszoo className="py-4" />
-      </footer>
+      <p className="mt-4 text-center text-xs text-muted-foreground">
+        Agencies get a shared monthly pool —{" "}
+        <Link to="/pricing" className="font-semibold text-primary underline-offset-2 hover:underline">
+          see all plans
+        </Link>
+      </p>
     </div>
   );
 }
