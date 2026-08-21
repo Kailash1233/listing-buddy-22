@@ -92,11 +92,11 @@ function Landing() {
         <section
           className="relative flex w-full max-w-[420px] flex-col overflow-hidden rounded-3xl border border-border bg-background shadow-[0_30px_60px_-40px_rgba(0,0,0,0.45)]"
           onTouchStart={(e) => {
-            touchX.current = e.touches[0].clientX;
+            touchX.current = e.touches[0]?.clientX ?? null;
           }}
           onTouchEnd={(e) => {
             if (touchX.current === null) return;
-            const delta = e.changedTouches[0].clientX - touchX.current;
+            const delta = (e.changedTouches[0]?.clientX ?? touchX.current) - touchX.current;
             if (Math.abs(delta) > 60) go(delta < 0 ? step + 1 : step - 1);
             touchX.current = null;
           }}
@@ -298,7 +298,7 @@ const STEPS = [
 
 function HowItWorksPage() {
   const [tab, setTab] = useState(0);
-  const s = STEPS[tab];
+  const s = STEPS[tab] ?? STEPS[0]!;
   return (
     <div>
       <h2 className="text-2xl font-extrabold leading-tight">Three steps, under a minute</h2>
