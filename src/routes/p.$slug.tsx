@@ -1,11 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { BedDouble, Building2, MapPin, MessageCircle, Phone, Ruler, Share2 } from "lucide-react";
+import { BedDouble, Building2, MapPin, Phone, Ruler, Share2 } from "lucide-react";
 import { getPublicBrokerPage } from "@/lib/public-listing.functions";
 import { formatINR, photoPaths, thumbUrl, waLink } from "@/lib/property";
 import { BrokerAvatar } from "@/components/BrokerAvatar";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -98,7 +99,7 @@ function AgentPage() {
                     <a
                       href={waLink(broker.whatsapp_number, `Hi ${broker.name}, I saw your listings.`)}
                     >
-                      <MessageCircle className="size-4" /> WhatsApp
+                      <WhatsAppIcon className="size-4" /> WhatsApp
                     </a>
                   </Button>
                 ) : null}

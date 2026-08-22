@@ -6,7 +6,6 @@ import {
   Check,
   FileText,
   Inbox,
-  MessageCircle,
   Sparkles,
   BedDouble,
   Ruler,
@@ -21,6 +20,7 @@ import home6 from "@/assets/home-6.png.asset.json";
 import home7 from "@/assets/home-7.png.asset.json";
 import home8 from "@/assets/home-8.png.asset.json";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -195,7 +195,7 @@ function HeroPage() {
         Built for Chennai brokers
       </span>
       <h1 className="mt-4 text-[1.75rem] font-extrabold leading-[1.1]">
-        Don&apos;t waste another lead on a WhatsApp photo dump
+        Share your property better. Get more enquiries from Whatsapp.
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
         Paste the same rough note you&apos;d send a buyer. Plotly writes the listing, builds a
@@ -206,7 +206,7 @@ function HeroPage() {
         <img src={home4.url} alt="Example Plotly property page cover" className="h-40 w-full object-cover" />
         <div className="space-y-3 p-4">
           <div className="flex items-center justify-between">
-            <p className="text-xl font-extrabold text-primary">₹85 Lakhs</p>
+            <p className="text-xl font-extrabold text-primary">₹1.4 Crore</p>
             <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">
               2 BHK
             </span>
@@ -226,7 +226,7 @@ function HeroPage() {
           </div>
           <div className="flex gap-2 pt-1">
             <div className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground">
-              <MessageCircle className="size-3.5" /> WhatsApp
+              <WhatsAppIcon className="size-3.5" /> WhatsApp
             </div>
             <div className="flex-1 rounded-xl border border-border px-3 py-2 text-center text-xs font-semibold">
               I&apos;m interested
@@ -244,7 +244,7 @@ function HeroPage() {
 
 const FEATURES = [
   { icon: Sparkles, t: "AI Quick Add", d: "Paste a rough note, get a structured listing" },
-  { icon: MessageCircle, t: "WhatsApp-ready", d: "Pre-written share message + Story image" },
+  { icon: WhatsAppIcon, t: "WhatsApp-ready", d: "Pre-written share message + Story image" },
   { icon: FileText, t: "PDF brochures", d: "Clean one-pager, generated instantly" },
   { icon: Inbox, t: "Lead inbox", d: "Every enquiry in one place, views tracked" },
 ];

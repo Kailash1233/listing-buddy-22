@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Eye, MessageCircle, Pencil, Share2 } from "lucide-react";
+import { Eye, Pencil, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Property } from "@/hooks/useBroker";
 import { formatINR, thumbUrl, photoPaths, propertyPath } from "@/lib/property";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -52,7 +53,7 @@ export function PropertyCard({ property, subdomain }: { property: Property; subd
             <Eye className="size-3.5" /> {property.view_count}
           </span>
           <span className="flex items-center gap-1">
-            <MessageCircle className="size-3.5" /> {property.whatsapp_click_count}
+            <WhatsAppIcon className="size-3.5" /> {property.whatsapp_click_count}
           </span>
         </div>
 

@@ -4,7 +4,6 @@ import {
   Building2,
   Eye,
   Inbox,
-  MessageCircle,
   Plus,
   Sparkles,
 } from "lucide-react";
@@ -15,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Badge } from "@/components/ui/badge";
 import { AgentPageCard } from "@/components/AgentPageCard";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({
@@ -77,7 +77,7 @@ function DashboardHome() {
       icon: Building2,
     },
     { label: "Page views", value: views, icon: Eye },
-    { label: "WhatsApp clicks", value: waClicks, icon: MessageCircle },
+    { label: "WhatsApp clicks", value: waClicks, icon: WhatsAppIcon },
     { label: "New enquiries", value: newLeads, icon: Inbox },
   ];
 
