@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Check, Copy, ExternalLink, Globe, MessageCircle, PenLine } from "lucide-react";
+import { Check, Copy, ExternalLink, Globe, PenLine } from "lucide-react";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -66,7 +67,7 @@ export function AgentPageCard({
             target="_blank"
             rel="noopener noreferrer"
           >
-            <MessageCircle className="size-4" /> Share on WhatsApp
+            <WhatsAppIcon className="size-4" /> Share on WhatsApp
           </a>
         </Button>
         <Button asChild variant="outline" size="sm">
