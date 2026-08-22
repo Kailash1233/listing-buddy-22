@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { BedDouble, Building2, MapPin, Phone, Ruler, Share2 } from "lucide-react";
 import { getPublicBrokerPage } from "@/lib/public-listing.functions";
-import { formatINR, photoPaths, thumbUrl, waLink } from "@/lib/property";
+import { formatINR, ogImageUrl, photoPaths, thumbUrl, waLink } from "@/lib/property";
 import { BrokerAvatar } from "@/components/BrokerAvatar";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
@@ -20,13 +20,17 @@ export const Route = createFileRoute("/p/$slug")({
     if (!loaderData) {
       return { meta: [{ title: "Agent unavailable" }, { name: "robots", content: "noindex" }] };
     }
-    const { broker, properties } = loaderData;
+    const { broker, properties, origin } = loaderData;
     const name = broker.agency_name || broker.name;
     const live = properties.filter((p) => p.status === "active").length;
     const title = `${name} — property agent in Chennai`;
     const description =
       broker.bio?.slice(0, 155) ||
       `${live} live listing${live === 1 ? "" : "s"} from ${name}. Photos, prices and instant WhatsApp enquiry.`;
+    const cover =
+      broker.photo_url || photoPaths(properties.find((p) => photoPaths(p.photos)[0])?.photos)[0];
+    const image = cover ? `${origin}${ogImageUrl(cover)}` : null;
+    const url = `${origin}/p/${broker.subdomain_slug}`;
     return {
       meta: [
         { title },
@@ -34,10 +38,21 @@ export const Route = createFileRoute("/p/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "profile" },
-        { name: "twitter:card", content: "summary_large_image" },
+        { property: "og:url", content: url },
+        { name: "twitter:card", content: image ? "summary_large_image" : "summary" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        ...(image
+          ? [
+              { property: "og:image", content: image },
+              { name: "twitter:image", content: image },
+            ]
+          : []),
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
+
   errorComponent: () => (
     <div className="grid min-h-screen place-items-center p-6 text-center text-muted-foreground">
       This agent page could not be loaded.
