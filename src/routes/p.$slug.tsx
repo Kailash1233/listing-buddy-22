@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { BedDouble, Building2, MapPin, Phone, Ruler, Share2 } from "lucide-react";
 import { getPublicBrokerPage } from "@/lib/public-listing.functions";
-import { formatINR, photoPaths, thumbUrl, waLink } from "@/lib/property";
+import { formatINR, mediaUrl, photoPaths, thumbUrl, waLink } from "@/lib/property";
 import { BrokerAvatar } from "@/components/BrokerAvatar";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
