@@ -77,7 +77,7 @@ function DashboardHome() {
       icon: Building2,
     },
     { label: "Page views", value: views, icon: Eye },
-    { label: "WhatsApp clicks", value: waClicks, icon: MessageCircle },
+    { label: "WhatsApp clicks", value: waClicks, icon: WhatsAppIcon },
     { label: "New enquiries", value: newLeads, icon: Inbox },
   ];
 

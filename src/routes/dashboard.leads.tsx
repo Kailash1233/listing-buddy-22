@@ -153,7 +153,7 @@ function LeadsPage() {
                     rel="noreferrer"
                     onClick={() => !lead.is_read && update(lead, { is_read: true })}
                   >
-                    <MessageCircle className="size-4" /> WhatsApp
+                    <WhatsAppIcon className="size-4" /> WhatsApp
                   </a>
                 </Button>
                 <Button asChild size="sm" variant="outline">

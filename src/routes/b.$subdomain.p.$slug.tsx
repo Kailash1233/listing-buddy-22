@@ -276,7 +276,7 @@ function PublicProperty() {
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
             <Button asChild onClick={() => track("whatsapp_click")}>
               <a href={waLink(broker.whatsapp_number, waMessage)} target="_blank" rel="noreferrer">
-                <MessageCircle className="size-4" /> WhatsApp
+                <WhatsAppIcon className="size-4" /> WhatsApp
               </a>
             </Button>
             <Button asChild variant="outline" onClick={() => track("call_click")}>
@@ -312,7 +312,7 @@ function PublicProperty() {
             onClick={() => track("whatsapp_click")}
           >
             <a href={waLink(broker.whatsapp_number, waMessage)} target="_blank" rel="noreferrer">
-              <MessageCircle className="size-4" /> WhatsApp broker
+              <WhatsAppIcon className="size-4" /> WhatsApp broker
             </a>
           </Button>
           <Button

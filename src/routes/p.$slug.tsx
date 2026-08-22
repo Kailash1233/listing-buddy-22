@@ -99,7 +99,7 @@ function AgentPage() {
                     <a
                       href={waLink(broker.whatsapp_number, `Hi ${broker.name}, I saw your listings.`)}
                     >
-                      <MessageCircle className="size-4" /> WhatsApp
+                      <WhatsAppIcon className="size-4" /> WhatsApp
                     </a>
                   </Button>
                 ) : null}

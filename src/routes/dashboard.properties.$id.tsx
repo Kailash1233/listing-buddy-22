@@ -133,7 +133,7 @@ function EditProperty() {
         </Button>
         <Button asChild variant="outline" size="sm">
           <a href={waLink("", shareText).replace("https://wa.me/?", "https://wa.me/?")} target="_blank" rel="noreferrer">
-            <MessageCircle className="size-4" /> Share on WhatsApp
+            <WhatsAppIcon className="size-4" /> Share on WhatsApp
           </a>
         </Button>
         <BrochureButton propertyId={property.id} slug={property.slug} />

@@ -60,7 +60,7 @@ function BrokerPage() {
           {broker.whatsapp_number ? (
             <Button asChild className="mt-5">
               <a href={waLink(broker.whatsapp_number, `Hi ${broker.name}, I saw your listings.`)}>
-                <MessageCircle className="size-4" /> WhatsApp {broker.name.split(" ")[0]}
+                <WhatsAppIcon className="size-4" /> WhatsApp {broker.name.split(" ")[0]}
               </a>
             </Button>
           ) : null}
