@@ -56,6 +56,13 @@ export function thumbUrl(path?: string | null): string {
   return `/api/public/media/${path}.thumb.jpg`;
 }
 
+/** 1200x630 social-preview crop, generated on demand by the media route. */
+export function ogImageUrl(path?: string | null): string {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  return `/api/public/media/${path}.og.jpg`;
+}
+
 export function photoPaths(photos: unknown): string[] {
   if (!Array.isArray(photos)) return [];
   return photos.filter((p): p is string => typeof p === "string");
