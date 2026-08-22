@@ -49,7 +49,9 @@ export const Route = createFileRoute("/b/$subdomain/p/$slug")({
     ].filter(Boolean);
     const description = (property.meta_description || `${bits.join(" · ")}. ${property.listing_type === "rent" ? "For rent" : "For sale"} in ${property.city ?? "Chennai"}. Enquire on WhatsApp.`).slice(0, 200);
     const cover = photoPaths(property.photos)[0];
-    const image = cover ? `${origin}${mediaUrl(cover)}` : null;
+    // Thumbnail (400px) keeps the preview under WhatsApp's size cap; the media
+    // route falls back to the original when no thumb was generated.
+    const image = cover ? `${origin}${thumbUrl(cover)}` : null;
     const url = `${origin}${propertyPath(params.subdomain, params.slug)}`;
     return {
       meta: [

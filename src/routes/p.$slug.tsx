@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { BedDouble, Building2, MapPin, Phone, Ruler, Share2 } from "lucide-react";
 import { getPublicBrokerPage } from "@/lib/public-listing.functions";
-import { formatINR, mediaUrl, photoPaths, thumbUrl, waLink } from "@/lib/property";
+import { formatINR, photoPaths, thumbUrl, waLink } from "@/lib/property";
 import { BrokerAvatar } from "@/components/BrokerAvatar";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/p/$slug")({
       `${live} live listing${live === 1 ? "" : "s"} from ${name}. Photos, prices and instant WhatsApp enquiry.`;
     const cover =
       broker.photo_url || photoPaths(properties.find((p) => photoPaths(p.photos)[0])?.photos)[0];
-    const image = cover ? `${origin}${mediaUrl(cover)}` : null;
+    const image = cover ? `${origin}${thumbUrl(cover)}` : null;
     const url = `${origin}/p/${broker.subdomain_slug}`;
     return {
       meta: [
