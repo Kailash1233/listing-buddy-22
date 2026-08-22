@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
+import { requestOrigin } from "@/lib/request-origin";
 
 const listingInput = z.object({
   subdomain: z.string().trim().min(1).max(80),
@@ -70,7 +71,7 @@ export const getPublicListing = createServerFn({ method: "GET" })
       .eq("broker_id", broker.id)
       .eq("status", "active");
 
-    return { broker, property, activeCount: count ?? 0 };
+    return { broker, property, activeCount: count ?? 0, origin: requestOrigin() };
   });
 
 export const trackPublicEvent = createServerFn({ method: "POST" })
@@ -151,5 +152,5 @@ export const getPublicBrokerPage = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .limit(60);
 
-    return { broker, properties: properties ?? [] };
+    return { broker, properties: properties ?? [], origin: requestOrigin() };
   });
