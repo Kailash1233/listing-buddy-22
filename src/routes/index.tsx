@@ -6,7 +6,6 @@ import {
   Check,
   FileText,
   Inbox,
-  MessageCircle,
   Sparkles,
   BedDouble,
   Ruler,
@@ -21,6 +20,7 @@ import home6 from "@/assets/home-6.png.asset.json";
 import home7 from "@/assets/home-7.png.asset.json";
 import home8 from "@/assets/home-8.png.asset.json";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 export const Route = createFileRoute("/")({
   head: () => ({
