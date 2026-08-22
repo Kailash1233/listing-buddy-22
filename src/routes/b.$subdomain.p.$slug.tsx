@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { getPublicListing, submitLead, trackPublicEvent } from "@/lib/public-listing.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
-import { formatINR, mediaUrl, thumbUrl, photoPaths, waLink } from "@/lib/property";
+import { formatINR, mediaUrl, thumbUrl, photoPaths, waLink, propertyPath } from "@/lib/property";
 import { BrochureButton } from "@/components/BrochureButton";
 import { BrokerAvatar } from "@/components/BrokerAvatar";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
