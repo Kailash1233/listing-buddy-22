@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Inbox, MessageCircle, Phone } from "lucide-react";
+import { Inbox, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBroker, type Lead, type Property } from "@/hooks/useBroker";
 import { LEAD_STATUS_LABEL, formatINR, waLink } from "@/lib/property";
@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import {
   Select,
   SelectContent,

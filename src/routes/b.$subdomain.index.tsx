@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { BedDouble, Building2, MapPin, MessageCircle, Ruler } from "lucide-react";
+import { BedDouble, Building2, MapPin, Ruler } from "lucide-react";
 import { getPublicBrokerPage } from "@/lib/public-listing.functions";
 import { formatINR, mediaUrl, photoPaths, waLink } from "@/lib/property";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 export const Route = createFileRoute("/b/$subdomain/")({
   loader: async ({ params }) => {

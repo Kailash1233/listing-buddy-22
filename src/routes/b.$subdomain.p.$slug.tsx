@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import {
   Loader2,
   MapPin,
-  MessageCircle,
   Phone,
   ShieldCheck,
   ArrowRight,
@@ -15,6 +14,7 @@ import { formatINR, mediaUrl, thumbUrl, photoPaths, waLink } from "@/lib/propert
 import { BrochureButton } from "@/components/BrochureButton";
 import { BrokerAvatar } from "@/components/BrokerAvatar";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ExternalLink, Loader2, MessageCircle, Trash2 } from "lucide-react";
+import { ExternalLink, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBroker, type Property } from "@/hooks/useBroker";
 import { propertyPath, waLink } from "@/lib/property";
@@ -27,6 +27,7 @@ import {
 import { PropertyEditor } from "@/components/PropertyEditor";
 import { StoryImageButton } from "@/components/StoryImage";
 import { BrochureButton } from "@/components/BrochureButton";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 export const Route = createFileRoute("/dashboard/properties/$id")({
   head: () => ({
