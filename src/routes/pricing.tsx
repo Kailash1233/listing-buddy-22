@@ -238,48 +238,50 @@ function AgencyPlans() {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      {agencies.map((plan) => (
-        <div key={plan.id} className="flex flex-col gap-4 rounded-3xl border border-border bg-card p-6">
-          <h3 className="font-bold">{plan.name}</h3>
-          <div className="text-3xl font-extrabold">
-            {plan.amountPaise === null ? (
-              "Custom"
-            ) : (
-              <>
-                {rupees(plan.amountPaise)}
-                <span className="text-sm font-medium text-muted-foreground">/mo</span>
-              </>
-            )}
-          </div>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li className="flex gap-2">
-              <Check className="size-4 shrink-0 text-primary" />
-              {plan.monthlyListingPool ?? "Custom"} listings / month, shared
-            </li>
-            <li className="flex gap-2">
-              <Check className="size-4 shrink-0 text-primary" />
-              {plan.seats ?? "Custom"} sub-agent seats
-            </li>
-            <li className="flex gap-2">
-              <Check className="size-4 shrink-0 text-primary" />
-              {plan.note}
-            </li>
-          </ul>
+    <div className="space-y-5">
+      <p className="rounded-2xl bg-peach px-4 py-3 text-center text-sm font-medium text-peach-foreground">
+        Agency plans are currently available via direct contact only.
+      </p>
+      <div className="grid gap-4 md:grid-cols-3">
+        {agencies.map((plan) => (
+          <div
+            key={plan.id}
+            className="flex flex-col gap-4 rounded-3xl border border-border bg-card p-6"
+          >
+            <h3 className="font-bold">{plan.name}</h3>
+            <div className="text-3xl font-extrabold">
+              {plan.amountPaise === null ? (
+                "Custom"
+              ) : (
+                <>
+                  {rupees(plan.amountPaise)}
+                  <span className="text-sm font-medium text-muted-foreground">/mo</span>
+                </>
+              )}
+            </div>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex gap-2">
+                <Check className="size-4 shrink-0 text-primary" />
+                {plan.monthlyListingPool ?? "Custom"} listings / month, shared
+              </li>
+              <li className="flex gap-2">
+                <Check className="size-4 shrink-0 text-primary" />
+                {plan.seats ?? "Custom"} sub-agent seats
+              </li>
+              <li className="flex gap-2">
+                <Check className="size-4 shrink-0 text-primary" />
+                {plan.note}
+              </li>
+            </ul>
 
-          {plan.selfServe ? (
-            <Button className="mt-auto" onClick={comingSoon}>
-              Subscribe
-            </Button>
-          ) : (
-            <Button asChild variant="outline" className="mt-auto">
-              <a href={SALES_WHATSAPP_URL} target="_blank" rel="noreferrer">
-                Talk to us
+            <Button asChild className="mt-auto">
+              <a href={agencyWhatsAppUrl(plan.name)} target="_blank" rel="noreferrer">
+                <WhatsAppIcon className="size-4" /> Contact on WhatsApp
               </a>
             </Button>
-          )}
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
