@@ -3,6 +3,8 @@ import { Eye, Pencil, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Property } from "@/hooks/useBroker";
 import { formatINR, thumbUrl, photoPaths, propertyPath } from "@/lib/property";
+import { blurhashFor } from "@/lib/blurhash";
+import { BlurImage } from "@/components/BlurImage";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +25,12 @@ export function PropertyCard({ property, subdomain }: { property: Property; subd
     <article className="surface overflow-hidden">
       <div className="relative aspect-[4/3] bg-muted">
         {cover ? (
-          <img src={thumbUrl(cover)} alt={property.title} className="size-full object-cover" loading="lazy" />
+          <BlurImage
+            src={thumbUrl(cover)}
+            hash={blurhashFor(property.photo_blurhashes, cover)}
+            alt={property.title}
+            className="size-full object-cover"
+          />
         ) : (
           <div className="grid size-full place-items-center text-sm text-muted-foreground">No photo</div>
         )}

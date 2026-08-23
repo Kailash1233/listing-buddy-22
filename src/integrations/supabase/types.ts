@@ -445,6 +445,7 @@ export type Database = {
           meta_description: string | null
           parking: string | null
           pdf_url: string | null
+          photo_blurhashes: Json
           photos: Json
           price: number | null
           price_display: string | null
@@ -481,6 +482,7 @@ export type Database = {
           meta_description?: string | null
           parking?: string | null
           pdf_url?: string | null
+          photo_blurhashes?: Json
           photos?: Json
           price?: number | null
           price_display?: string | null
@@ -517,6 +519,7 @@ export type Database = {
           meta_description?: string | null
           parking?: string | null
           pdf_url?: string | null
+          photo_blurhashes?: Json
           photos?: Json
           price?: number | null
           price_display?: string | null

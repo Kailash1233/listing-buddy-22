@@ -7,6 +7,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { parseListing, regenerateCopy } from "@/lib/ai.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
+import { blurhashMap } from "@/lib/blurhash";
 import { AMENITY_OPTIONS, FACINGS, formatINR, photoPaths, slugify } from "@/lib/property";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,6 +54,7 @@ type Draft = {
   amenities: string[];
   rera_number: string;
   photos: string[];
+  photo_blurhashes: Record<string, string>;
   floor_plan: string[];
 };
 
@@ -79,6 +81,7 @@ function emptyDraft(): Draft {
     amenities: [],
     rera_number: "",
     photos: [],
+    photo_blurhashes: {},
     floor_plan: [],
   };
 }
@@ -106,6 +109,7 @@ function fromProperty(p: Property): Draft {
     amenities: p.amenities ?? [],
     rera_number: p.rera_number ?? "",
     photos: photoPaths(p.photos),
+    photo_blurhashes: blurhashMap(p.photo_blurhashes),
     floor_plan: p.floor_plan_url ? [p.floor_plan_url] : [],
   };
 }
@@ -246,6 +250,7 @@ export function PropertyEditor({
           ? ("provided_unverified" as const)
           : ("not_provided" as const),
         photos: draft.photos,
+        photo_blurhashes: draft.photo_blurhashes,
         floor_plan_url: draft.floor_plan[0] ?? null,
         status: property?.status ?? ("draft" as const),
       };
@@ -548,7 +553,13 @@ export function PropertyEditor({
       </div>
 
       <div className="surface space-y-5 p-5">
-        <PhotoUploader userId={broker.id} paths={draft.photos} onChange={(p) => set("photos", p)} />
+        <PhotoUploader
+          userId={broker.id}
+          paths={draft.photos}
+          onChange={(p) => set("photos", p)}
+          hashes={draft.photo_blurhashes}
+          onHashes={(h) => set("photo_blurhashes", h)}
+        />
         <PhotoUploader
           userId={broker.id}
           paths={draft.floor_plan}

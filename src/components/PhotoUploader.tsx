@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { thumbUrl } from "@/lib/property";
+import { encodeBlurhash } from "@/lib/blurhash";
+import { BlurImage } from "@/components/BlurImage";
 import { Button } from "@/components/ui/button";
 
 async function makeThumb(file: File, width = 400): Promise<Blob | null> {
@@ -22,6 +24,8 @@ export function PhotoUploader({
   userId,
   paths,
   onChange,
+  hashes = {},
+  onHashes,
   max = 15,
   label = "Photos",
   single = false,
@@ -29,6 +33,8 @@ export function PhotoUploader({
   userId: string;
   paths: string[];
   onChange: (paths: string[]) => void;
+  hashes?: Record<string, string>;
+  onHashes?: (hashes: Record<string, string>) => void;
   max?: number;
   label?: string;
   single?: boolean;
@@ -45,6 +51,7 @@ export function PhotoUploader({
     }
     setBusy(true);
     const next: string[] = [];
+    const nextHashes: Record<string, string> = {};
     for (const file of Array.from(files).slice(0, room)) {
       if (!file.type.startsWith("image/")) continue;
       const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
@@ -58,6 +65,10 @@ export function PhotoUploader({
       }
       next.push(path);
 
+      // BlurHash is computed once, here, from the local File — never on render.
+      const hash = await encodeBlurhash(file);
+      if (hash) nextHashes[path] = hash;
+
       // Write a 400px thumbnail next to the original so grids never load full-res photos.
       const thumb = await makeThumb(file).catch(() => null);
       if (thumb) {
@@ -67,8 +78,15 @@ export function PhotoUploader({
       }
     }
     setBusy(false);
-    onChange(single ? next.slice(0, 1) : [...paths, ...next]);
+    const finalPaths = single ? next.slice(0, 1) : [...paths, ...next];
+    onChange(finalPaths);
+    onHashes?.(
+      Object.fromEntries(
+        Object.entries({ ...hashes, ...nextHashes }).filter(([p]) => finalPaths.includes(p)),
+      ),
+    );
   }
+
 
   return (
     <div>
@@ -76,7 +94,7 @@ export function PhotoUploader({
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
         {paths.map((p) => (
           <div key={p} className="group relative aspect-square overflow-hidden rounded-xl border border-border">
-            <img src={thumbUrl(p)} alt="Property" className="size-full object-cover" loading="lazy" />
+            <BlurImage src={thumbUrl(p)} hash={hashes[p]} alt="Property" className="size-full object-cover" />
             <button
               type="button"
               onClick={() => onChange(paths.filter((x) => x !== p))}

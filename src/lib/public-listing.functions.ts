@@ -145,7 +145,7 @@ export const getPublicBrokerPage = createServerFn({ method: "GET" })
     const { data: properties } = await supabaseAdmin
       .from("properties")
       .select(
-        "id, slug, title, price_display, price, bhk, area_sqft, locality, city, photos, status, property_type, listing_type",
+        "id, slug, title, price_display, price, bhk, area_sqft, locality, city, photos, photo_blurhashes, status, property_type, listing_type",
       )
       .eq("broker_id", broker.id)
       .in("status", ["active", "sold", "rented"])
