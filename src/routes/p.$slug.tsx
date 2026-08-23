@@ -23,7 +23,9 @@ export const Route = createFileRoute("/p/$slug")({
     const { broker, properties, origin } = loaderData;
     const name = broker.agency_name || broker.name;
     const live = properties.filter((p) => p.status === "active").length;
-    const title = `${name} — property agent in Chennai`;
+    const title = broker.agency_name
+      ? `${broker.name} — Chennai Property Agent | ${broker.agency_name}`
+      : `${broker.name} — Chennai Property Agent`;
     const description =
       broker.bio?.slice(0, 155) ||
       `${live} live listing${live === 1 ? "" : "s"} from ${name}. Photos, prices and instant WhatsApp enquiry.`;
@@ -80,37 +82,43 @@ function AgentPage() {
   return (
     <main className="min-h-screen bg-background">
       <header className="navy-gradient">
-        <div className="mx-auto max-w-5xl px-4 py-12">
+        <div className="mx-auto max-w-5xl px-5 py-10 sm:px-4 sm:py-14">
           <div className="flex justify-end">
             <ShareButton name={name} />
           </div>
-          <div className="mt-2 flex flex-col gap-6 sm:flex-row sm:items-center">
+          <div className="mt-4 flex flex-col gap-7 sm:mt-2 sm:flex-row sm:items-center sm:gap-10">
             <BrokerAvatar
               name={broker.name}
               photoUrl={broker.photo_url}
-              className="size-24 bg-white/10 text-2xl text-inherit"
+              className="size-28 bg-white/10 text-3xl text-inherit sm:size-36 lg:size-44 lg:text-5xl"
             />
             <div className="min-w-0">
               <p className="eyebrow opacity-70">Chennai property agent</p>
-              <h1 className="mt-1 text-3xl font-extrabold tracking-tight">{name}</h1>
-              {broker.agency_name ? <p className="mt-1 opacity-80">{broker.name}</p> : null}
+              <h1 className="mt-2 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                {name}
+              </h1>
+              {broker.agency_name ? (
+                <p className="mt-2 text-base opacity-80 lg:text-lg">{broker.name}</p>
+              ) : null}
 
-              <dl className="mt-5 flex gap-8">
+              <dl className="mt-7 grid grid-cols-3 gap-4 sm:flex sm:gap-10">
                 {stats.map((s) => (
-                  <div key={s.label}>
+                  <div key={s.label} className="min-w-0">
                     <dt className="eyebrow opacity-60">{s.label}</dt>
-                    <dd className="mt-1 text-2xl font-extrabold">{s.value}</dd>
+                    <dd className="mt-1.5 text-2xl font-extrabold lg:text-3xl">{s.value}</dd>
                   </div>
                 ))}
               </dl>
 
               {broker.bio ? (
-                <p className="mt-5 max-w-xl text-sm leading-relaxed opacity-85">{broker.bio}</p>
+                <p className="mt-7 max-w-xl text-sm leading-relaxed opacity-85 lg:text-base">
+                  {broker.bio}
+                </p>
               ) : null}
 
-              <div className="mt-5 flex flex-wrap gap-3">
+              <div className="mt-7 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
                 {broker.whatsapp_number ? (
-                  <Button asChild variant="secondary">
+                  <Button asChild variant="secondary" size="lg" className="w-full sm:w-auto">
                     <a
                       href={waLink(broker.whatsapp_number, `Hi ${broker.name}, I saw your listings.`)}
                     >
@@ -122,7 +130,8 @@ function AgentPage() {
                   <Button
                     asChild
                     variant="outline"
-                    className="border-white/30 bg-transparent text-inherit hover:bg-white/10"
+                    size="lg"
+                    className="w-full border-white/30 bg-transparent text-inherit hover:bg-white/10 sm:w-auto"
                   >
                     <a href={`tel:${broker.phone}`}>
                       <Phone className="size-4" /> Call
