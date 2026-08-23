@@ -208,7 +208,13 @@ function SoloCard() {
         <p className="mt-5 text-sm text-muted-foreground">{pack.note}</p>
 
         {pack.purchasable ? (
-          <Button size="lg" className="mt-5 w-full" onClick={comingSoon}>
+          <Button
+            size="lg"
+            className="mt-5 w-full"
+            disabled={busy}
+            onClick={() => void buy(pack.id as "starter" | "launch")}
+          >
+            {busy ? <Loader2 className="size-4 animate-spin" /> : null}
             Buy {pack.credits} listings — {rupees(pack.amountPaise)}
           </Button>
         ) : (
