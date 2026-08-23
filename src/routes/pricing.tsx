@@ -109,19 +109,24 @@ function PricingPage() {
           <div className="mx-auto mt-8 inline-flex rounded-full bg-navy-foreground/10 p-1">
             {(
               [
-                ["solo", "Solo broker"],
-                ["agency", "Agency owner"],
+                ["solo", "Solo broker", "bg-primary text-primary-foreground"],
+                ["agency", "Agency owner", "bg-agency text-agency-foreground"],
               ] as const
-            ).map(([key, label]) => (
+            ).map(([key, label, activeClass]) => (
               <button
                 key={key}
                 onClick={() => setAudience(key)}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
+                className={`flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
                   audience === key
-                    ? "bg-primary text-primary-foreground"
+                    ? activeClass
                     : "text-navy-foreground/70 hover:text-navy-foreground"
                 }`}
               >
+                {key === "solo" ? (
+                  <User className="size-4" />
+                ) : (
+                  <Building2 className="size-4" />
+                )}
                 {label}
               </button>
             ))}
