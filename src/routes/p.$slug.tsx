@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { BedDouble, Building2, MapPin, Phone, Ruler, Share2 } from "lucide-react";
 import { getPublicBrokerPage } from "@/lib/public-listing.functions";
 import { formatINR, ogImageUrl, photoPaths, thumbUrl, waLink } from "@/lib/property";
+import { blurhashFor } from "@/lib/blurhash";
+import { BlurImage } from "@/components/BlurImage";
 import { BrokerAvatar } from "@/components/BrokerAvatar";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
@@ -168,10 +170,10 @@ function AgentPage() {
                 >
                   <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
                     {cover ? (
-                      <img
+                      <BlurImage
                         src={thumbUrl(cover)}
+                        hash={blurhashFor(p.photo_blurhashes, cover)}
                         alt={p.title}
-                        loading="lazy"
                         className="size-full object-cover transition-transform group-hover:scale-[1.03]"
                       />
                     ) : null}

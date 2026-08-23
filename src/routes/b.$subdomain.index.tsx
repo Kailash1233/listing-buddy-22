@@ -2,6 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { BedDouble, Building2, MapPin, Ruler } from "lucide-react";
 import { getPublicBrokerPage } from "@/lib/public-listing.functions";
 import { formatINR, mediaUrl, photoPaths, waLink } from "@/lib/property";
+import { blurhashFor } from "@/lib/blurhash";
+import { BlurImage } from "@/components/BlurImage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
@@ -87,10 +89,10 @@ function BrokerPage() {
                 >
                   <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
                     {cover ? (
-                      <img
+                      <BlurImage
                         src={mediaUrl(cover)}
+                        hash={blurhashFor(p.photo_blurhashes, cover)}
                         alt={p.title}
-                        loading="lazy"
                         className="size-full object-cover transition-transform group-hover:scale-[1.03]"
                       />
                     ) : null}

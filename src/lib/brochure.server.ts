@@ -33,20 +33,33 @@ function wrap(text: string, max: number): string[] {
 }
 
 export async function buildBrochure(propertyId: string) {
-  const { data: property } = await supabaseAdmin
+  console.log("[brochure] fetching listing", propertyId);
+  const { data: property, error: fetchError } = await supabaseAdmin
     .from("properties")
     .select("*, brokers(name, agency_name, phone, whatsapp_number)")
     .eq("id", propertyId)
     .maybeSingle();
 
-  if (!property || !["active", "sold", "rented"].includes(property.status)) return null;
+  if (fetchError) {
+    console.error("[brochure] listing fetch failed", propertyId, fetchError.message);
+    throw new Error(`Listing fetch failed: ${fetchError.message}`);
+  }
+  if (!property || !["active", "sold", "rented"].includes(property.status)) {
+    console.warn("[brochure] listing missing or not public", propertyId, property?.status);
+    return null;
+  }
 
   const filename = `${property.slug || "property"}.pdf`;
   // Cached per property revision: editing the listing bumps updated_at and busts the key.
   const cacheKey = `brochures/${property.id}/${Date.parse(property.updated_at ?? "") || 0}.pdf`;
-  const cached = await supabaseAdmin.storage.from("property-media").download(cacheKey);
-  if (cached.data) {
-    return { bytes: new Uint8Array(await cached.data.arrayBuffer()), filename };
+  try {
+    const cached = await supabaseAdmin.storage.from("property-media").download(cacheKey);
+    if (cached.data) {
+      console.log("[brochure] cache hit", cacheKey);
+      return { bytes: new Uint8Array(await cached.data.arrayBuffer()), filename };
+    }
+  } catch (err) {
+    console.warn("[brochure] cache read failed, regenerating", cacheKey, String(err));
   }
 
   const broker = (property.brokers ?? {}) as {
@@ -56,6 +69,7 @@ export async function buildBrochure(propertyId: string) {
     whatsapp_number?: string;
   };
 
+  console.log("[brochure] building pdf", propertyId);
   const pdf = await PDFDocument.create();
   const page = pdf.addPage([595, 842]);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
@@ -81,7 +95,11 @@ export async function buildBrochure(propertyId: string) {
   const first = photos.find((p): p is string => typeof p === "string");
   if (first) {
     try {
-      const { data: file } = await supabaseAdmin.storage.from("property-media").download(first);
+      console.log("[brochure] fetching cover image", first);
+      const { data: file, error: mediaError } = await supabaseAdmin.storage
+        .from("property-media")
+        .download(first);
+      if (mediaError) throw new Error(mediaError.message);
       if (file) {
         const bytes = new Uint8Array(await file.arrayBuffer());
         const img = first.toLowerCase().endsWith(".png")
@@ -92,10 +110,15 @@ export async function buildBrochure(propertyId: string) {
         page.drawImage(img, { x: 40, y: y - h, width: w, height: h });
         y -= h + 24;
       }
-    } catch {
-      /* skip unsupported image */
+    } catch (err) {
+      // A broken/oversized/unsupported photo must never fail the whole brochure.
+      console.warn("[brochure] cover image skipped", first, String(err));
+      page.drawRectangle({ x: 40, y: y - 140, width: 515, height: 140, color: rgb(0.93, 0.94, 0.96) });
+      page.drawText("Photo unavailable", { x: 240, y: y - 76, size: 11, font, color: GREY });
+      y -= 164;
     }
   }
+
 
   page.drawText(property.price_display ? clean(property.price_display) : money(property.price), {
     x: 40,
@@ -180,11 +203,19 @@ export async function buildBrochure(propertyId: string) {
   });
 
   const bytes = await pdf.save();
+  console.log("[brochure] pdf assembled", propertyId, bytes.byteLength, "bytes");
 
-  await supabaseAdmin.storage
-    .from("property-media")
-    .upload(cacheKey, bytes, { contentType: "application/pdf", upsert: true })
-    .catch(() => null);
+  try {
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from("property-media")
+      .upload(cacheKey, bytes, { contentType: "application/pdf", upsert: true });
+    if (uploadError) throw new Error(uploadError.message);
+    console.log("[brochure] cached", cacheKey);
+  } catch (err) {
+    // Caching is best effort — still return the freshly generated PDF.
+    console.warn("[brochure] cache write failed", cacheKey, String(err));
+  }
 
   return { bytes, filename };
 }
+

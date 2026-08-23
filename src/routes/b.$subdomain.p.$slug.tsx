@@ -11,6 +11,8 @@ import {
 import { getPublicListing, submitLead, trackPublicEvent } from "@/lib/public-listing.functions";
 import type { Broker, Property } from "@/hooks/useBroker";
 import { formatINR, mediaUrl, thumbUrl, photoPaths, waLink, propertyPath, ogImageUrl } from "@/lib/property";
+import { blurhashFor } from "@/lib/blurhash";
+import { BlurImage } from "@/components/BlurImage";
 import { BrochureButton } from "@/components/BrochureButton";
 import { BrokerAvatar } from "@/components/BrokerAvatar";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
@@ -143,9 +145,12 @@ function PublicProperty() {
         {photos.length > 0 && (
           <section className="pt-4">
             <div className="overflow-hidden rounded-2xl bg-muted">
-              <img
+              <BlurImage
                 src={mediaUrl(photos[active])}
+                hash={blurhashFor(property.photo_blurhashes, photos[active])}
                 alt={property.title}
+                loading="eager"
+                fetchPriority="high"
                 className="aspect-[4/3] w-full object-cover"
               />
             </div>
@@ -160,7 +165,12 @@ function PublicProperty() {
                     }`}
                     aria-label={`Photo ${i + 1}`}
                   >
-                    <img src={thumbUrl(p)} alt="" className="size-full object-cover" loading="lazy" />
+                    <BlurImage
+                      src={thumbUrl(p)}
+                      hash={blurhashFor(property.photo_blurhashes, p)}
+                      alt=""
+                      className="size-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -224,11 +234,11 @@ function PublicProperty() {
         {property.floor_plan_url && (
           <section className="mt-8">
             <h2 className="text-lg font-bold">Floor plan</h2>
-            <img
+            <BlurImage
               src={mediaUrl(property.floor_plan_url)}
+              hash={blurhashFor(property.photo_blurhashes, property.floor_plan_url)}
               alt="Floor plan"
               className="mt-3 w-full rounded-xl border border-border"
-              loading="lazy"
             />
           </section>
         )}
