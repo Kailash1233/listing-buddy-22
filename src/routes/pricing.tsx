@@ -40,8 +40,11 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
-function comingSoon() {
-  toast.info("Agency subscriptions open shortly — message us on WhatsApp and we'll set you up today.");
+/** WhatsApp link for agency plan enquiries. */
+function agencyWhatsAppUrl(planName: string) {
+  return `https://wa.me/918190069737?text=${encodeURIComponent(
+    `Hi, I'm interested in the ${planName} plan on Property Genie.`,
+  )}`;
 }
 
 /** Starts a Cashfree checkout for a one-time listing credit pack. */
