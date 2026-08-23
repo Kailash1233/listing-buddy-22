@@ -8,6 +8,7 @@ import { createPackCheckout } from "@/lib/payments.functions";
 import { openCashfreeCheckout } from "@/lib/cashfree-checkout";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/marketing";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import {
   AGENCY_PLANS,
