@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PaymentStatusRouteImport } from './routes/payment-status'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -54,6 +55,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentStatusRoute = PaymentStatusRouteImport.update({
+  id: '/payment-status',
+  path: '/payment-status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/terms': typeof TermsRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/onboarding': typeof OnboardingRoute
+  '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/terms': typeof TermsRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/terms': typeof TermsRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/onboarding'
+    | '/payment-status'
     | '/pricing'
     | '/refund-policy'
     | '/terms'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/onboarding'
+    | '/payment-status'
     | '/pricing'
     | '/refund-policy'
     | '/terms'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/onboarding'
+    | '/payment-status'
     | '/pricing'
     | '/refund-policy'
     | '/terms'
@@ -285,6 +297,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
+  PaymentStatusRoute: typeof PaymentStatusRoute
   PricingRoute: typeof PricingRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
   TermsRoute: typeof TermsRoute
@@ -331,6 +344,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-status': {
+      id: '/payment-status'
+      path: '/payment-status'
+      fullPath: '/payment-status'
+      preLoaderRoute: typeof PaymentStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -478,6 +498,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
+  PaymentStatusRoute: PaymentStatusRoute,
   PricingRoute: PricingRoute,
   RefundPolicyRoute: RefundPolicyRoute,
   TermsRoute: TermsRoute,

@@ -7,7 +7,7 @@ import { MarketingHeader } from "@/components/MarketingHeader";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import { getCheckoutStatus } from "@/lib/payments.functions";
 
-type Search = { order_id?: string };
+type Search = { order_id: string | undefined };
 
 export const Route = createFileRoute("/payment-status")({
   validateSearch: (search: Record<string, unknown>): Search => ({
