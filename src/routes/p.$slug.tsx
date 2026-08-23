@@ -23,7 +23,9 @@ export const Route = createFileRoute("/p/$slug")({
     const { broker, properties, origin } = loaderData;
     const name = broker.agency_name || broker.name;
     const live = properties.filter((p) => p.status === "active").length;
-    const title = `${name} — property agent in Chennai`;
+    const title = broker.agency_name
+      ? `${broker.name} — Chennai Property Agent | ${broker.agency_name}`
+      : `${broker.name} — Chennai Property Agent`;
     const description =
       broker.bio?.slice(0, 155) ||
       `${live} live listing${live === 1 ? "" : "s"} from ${name}. Photos, prices and instant WhatsApp enquiry.`;
