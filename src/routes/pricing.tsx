@@ -12,7 +12,6 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import {
   AGENCY_PLANS,
-  SALES_WHATSAPP_URL,
   SOLO_PACKS,
   isOfferLive,
   rupees,
