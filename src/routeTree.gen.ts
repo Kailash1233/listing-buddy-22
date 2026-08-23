@@ -22,6 +22,7 @@ import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
 import { Route as DashboardTeamRouteImport } from './routes/dashboard.team'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
+import { Route as ApiPublicCashfreeWebhookRouteImport } from './routes/api/public/cashfree-webhook'
 import { Route as BSubdomainIndexRouteImport } from './routes/b.$subdomain.index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard.properties.index'
 import { Route as DashboardPropertiesIdRouteImport } from './routes/dashboard.properties.$id'
@@ -95,6 +96,12 @@ const PSlugRoute = PSlugRouteImport.update({
   path: '/p/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCashfreeWebhookRoute =
+  ApiPublicCashfreeWebhookRouteImport.update({
+    id: '/api/public/cashfree-webhook',
+    path: '/api/public/cashfree-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const BSubdomainIndexRoute = BSubdomainIndexRouteImport.update({
   id: '/b/$subdomain/',
   path: '/b/$subdomain/',
@@ -146,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/team': typeof DashboardTeamRoute
   '/p/$slug': typeof PSlugRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/cashfree-webhook': typeof ApiPublicCashfreeWebhookRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
   '/b/$subdomain/': typeof BSubdomainIndexRoute
@@ -167,6 +175,7 @@ export interface FileRoutesByTo {
   '/dashboard/team': typeof DashboardTeamRoute
   '/p/$slug': typeof PSlugRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/api/public/cashfree-webhook': typeof ApiPublicCashfreeWebhookRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
   '/b/$subdomain': typeof BSubdomainIndexRoute
@@ -190,6 +199,7 @@ export interface FileRoutesById {
   '/dashboard/team': typeof DashboardTeamRoute
   '/p/$slug': typeof PSlugRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/cashfree-webhook': typeof ApiPublicCashfreeWebhookRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
   '/b/$subdomain/': typeof BSubdomainIndexRoute
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/dashboard/team'
     | '/p/$slug'
     | '/dashboard/'
+    | '/api/public/cashfree-webhook'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
     | '/b/$subdomain/'
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
     | '/dashboard/team'
     | '/p/$slug'
     | '/dashboard'
+    | '/api/public/cashfree-webhook'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
     | '/b/$subdomain'
@@ -257,6 +269,7 @@ export interface FileRouteTypes {
     | '/dashboard/team'
     | '/p/$slug'
     | '/dashboard/'
+    | '/api/public/cashfree-webhook'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
     | '/b/$subdomain/'
@@ -276,6 +289,7 @@ export interface RootRouteChildren {
   RefundPolicyRoute: typeof RefundPolicyRoute
   TermsRoute: typeof TermsRoute
   PSlugRoute: typeof PSlugRoute
+  ApiPublicCashfreeWebhookRoute: typeof ApiPublicCashfreeWebhookRoute
   BSubdomainIndexRoute: typeof BSubdomainIndexRoute
   ApiPublicBrochureIdRoute: typeof ApiPublicBrochureIdRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
@@ -375,6 +389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cashfree-webhook': {
+      id: '/api/public/cashfree-webhook'
+      path: '/api/public/cashfree-webhook'
+      fullPath: '/api/public/cashfree-webhook'
+      preLoaderRoute: typeof ApiPublicCashfreeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/b/$subdomain/': {
       id: '/b/$subdomain/'
       path: '/b/$subdomain'
@@ -461,6 +482,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefundPolicyRoute: RefundPolicyRoute,
   TermsRoute: TermsRoute,
   PSlugRoute: PSlugRoute,
+  ApiPublicCashfreeWebhookRoute: ApiPublicCashfreeWebhookRoute,
   BSubdomainIndexRoute: BSubdomainIndexRoute,
   ApiPublicBrochureIdRoute: ApiPublicBrochureIdRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
