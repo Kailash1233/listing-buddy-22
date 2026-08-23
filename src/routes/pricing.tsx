@@ -41,7 +41,33 @@ export const Route = createFileRoute("/pricing")({
 });
 
 function comingSoon() {
-  toast.info("Card payments switch on shortly — we'll email you the moment checkout is live.");
+  toast.info("Agency subscriptions open shortly — message us on WhatsApp and we'll set you up today.");
+}
+
+/** Starts a Cashfree checkout for a one-time listing credit pack. */
+export function usePackCheckout() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const startCheckout = useServerFn(createPackCheckout);
+  const [busy, setBusy] = useState(false);
+
+  const buy = async (packId: "starter" | "launch") => {
+    if (!user) {
+      toast.info("Create your free account first — then you can top up credits.");
+      void navigate({ to: "/auth", search: { mode: "signup" } });
+      return;
+    }
+    setBusy(true);
+    try {
+      const order = await startCheckout({ data: { packId } });
+      await openCashfreeCheckout(order.paymentSessionId, order.mode as "sandbox" | "production");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not start the payment.");
+      setBusy(false);
+    }
+  };
+
+  return { buy, busy };
 }
 
 const INCLUDED = [
