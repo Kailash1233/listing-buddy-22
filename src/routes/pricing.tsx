@@ -104,6 +104,8 @@ function PricingPage() {
           brochures and WhatsApp-ready share copy.
         </p>
       </section>
+
+      <PoweredByAdszoo />
     </main>
   );
 }
