@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, Loader2, Sparkles } from "lucide-react";
+import { Building2, Check, Loader2, Sparkles, User } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { useAuth } from "@/hooks/useAuth";
@@ -109,19 +109,24 @@ function PricingPage() {
           <div className="mx-auto mt-8 inline-flex rounded-full bg-navy-foreground/10 p-1">
             {(
               [
-                ["solo", "Solo broker"],
-                ["agency", "Agency owner"],
+                ["solo", "Solo broker", "bg-primary text-primary-foreground"],
+                ["agency", "Agency owner", "bg-agency text-agency-foreground"],
               ] as const
-            ).map(([key, label]) => (
+            ).map(([key, label, activeClass]) => (
               <button
                 key={key}
                 onClick={() => setAudience(key)}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
+                className={`flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
                   audience === key
-                    ? "bg-primary text-primary-foreground"
+                    ? activeClass
                     : "text-navy-foreground/70 hover:text-navy-foreground"
                 }`}
               >
+                {key === "solo" ? (
+                  <User className="size-4" />
+                ) : (
+                  <Building2 className="size-4" />
+                )}
                 {label}
               </button>
             ))}
@@ -242,17 +247,21 @@ function AgencyPlans() {
 
   return (
     <div className="space-y-5">
-      <p className="rounded-2xl bg-peach px-4 py-3 text-center text-sm font-medium text-peach-foreground">
+      <p className="flex flex-wrap items-center justify-center gap-2 rounded-2xl bg-agency-soft px-4 py-3 text-center text-sm font-medium text-agency">
+        <Building2 className="size-4 shrink-0" />
         Agency plans are currently available via direct contact only.
       </p>
       <div className="grid gap-4 md:grid-cols-3">
         {agencies.map((plan) => (
           <div
             key={plan.id}
-            className="flex flex-col gap-4 rounded-3xl border border-border bg-card p-6"
+            className="flex flex-col gap-4 rounded-3xl border border-agency/25 bg-card p-6 shadow-soft"
           >
+            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-agency-soft px-3 py-1 text-xs font-bold uppercase tracking-wide text-agency">
+              <Building2 className="size-3.5" /> Agency
+            </span>
             <h3 className="font-bold">{plan.name}</h3>
-            <div className="text-3xl font-extrabold">
+            <div className="text-3xl font-extrabold text-agency">
               {plan.amountPaise === null ? (
                 "Custom"
               ) : (
@@ -264,20 +273,20 @@ function AgencyPlans() {
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex gap-2">
-                <Check className="size-4 shrink-0 text-primary" />
+                <Check className="size-4 shrink-0 text-agency" />
                 {plan.monthlyListingPool ?? "Custom"} listings / month, shared
               </li>
               <li className="flex gap-2">
-                <Check className="size-4 shrink-0 text-primary" />
+                <Check className="size-4 shrink-0 text-agency" />
                 {plan.seats ?? "Custom"} sub-agent seats
               </li>
               <li className="flex gap-2">
-                <Check className="size-4 shrink-0 text-primary" />
+                <Check className="size-4 shrink-0 text-agency" />
                 {plan.note}
               </li>
             </ul>
 
-            <Button asChild className="mt-auto">
+            <Button asChild className="mt-auto bg-agency text-agency-foreground hover:bg-agency/90">
               <a href={agencyWhatsAppUrl(plan.name)} target="_blank" rel="noreferrer">
                 <WhatsAppIcon className="size-4" /> Contact on WhatsApp
               </a>
