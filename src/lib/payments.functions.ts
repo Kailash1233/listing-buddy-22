@@ -86,7 +86,7 @@ export const getCheckoutStatus = createServerFn({ method: "POST" })
     if (remoteStatus === "PAID") {
       const { data: settled } = await supabaseAdmin.rpc("settle_credit_purchase", {
         _cashfree_order_id: data.orderId,
-        _cashfree_payment_id: null,
+        _cashfree_payment_id: "",
         _status: "paid",
       });
       const result = settled as { paid?: boolean } | null;
