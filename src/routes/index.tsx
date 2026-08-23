@@ -387,6 +387,7 @@ function IncludedPage() {
 
 function PricingPage() {
   const packs = [SOLO_PACKS.free, SOLO_PACKS.starter, SOLO_PACKS.launch];
+  const [selected, setSelected] = useState<string>(SOLO_PACKS.free.id);
   return (
     <div>
       <h2 className="text-2xl font-extrabold leading-tight">Pay for listings, not for months</h2>
@@ -400,12 +401,18 @@ function PricingPage() {
           const off = offer
             ? Math.round((1 - pack.amountPaise / (pack.compareAtPaise as number)) * 100)
             : null;
+          const isSelected = pack.id === selected;
           return (
-            <div
+            <button
               key={pack.id}
+              type="button"
+              aria-pressed={isSelected}
+              onClick={() => setSelected(pack.id)}
               className={cn(
-                "rounded-2xl border p-4",
-                pack.id === "launch" ? "border-primary bg-primary/5" : "border-border bg-card",
+                "w-full rounded-2xl border p-4 text-left transition-colors",
+                isSelected
+                  ? "border-primary bg-primary/5 ring-2 ring-primary/30"
+                  : "border-border bg-card hover:border-primary/40",
               )}
             >
               <div className="flex items-start justify-between gap-3">
@@ -430,10 +437,11 @@ function PricingPage() {
                   {off}% OFF
                 </span>
               ) : null}
-            </div>
+            </button>
           );
         })}
       </div>
+
 
       <p className="mt-4 text-center text-xs text-muted-foreground">
         Agencies get a shared monthly pool —{" "}
