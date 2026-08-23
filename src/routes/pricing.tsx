@@ -1,7 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { useAuth } from "@/hooks/useAuth";
+import { createPackCheckout } from "@/lib/payments.functions";
+import { openCashfreeCheckout } from "@/lib/cashfree-checkout";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/marketing";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
