@@ -143,6 +143,7 @@ function PricingPage() {
 function SoloCard() {
   const packs = [SOLO_PACKS.free, SOLO_PACKS.starter, SOLO_PACKS.launch];
   const [selected, setSelected] = useState<SoloPackId>("launch");
+  const { buy, busy } = usePackCheckout();
   const pack = SOLO_PACKS[selected];
   const offer = isOfferLive(pack);
   const ends = formatDate(pack.offerEndsAt);
