@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PaymentStatusRouteImport } from './routes/payment-status'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -22,6 +23,7 @@ import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
 import { Route as DashboardTeamRouteImport } from './routes/dashboard.team'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
+import { Route as ApiPublicCashfreeWebhookRouteImport } from './routes/api/public/cashfree-webhook'
 import { Route as BSubdomainIndexRouteImport } from './routes/b.$subdomain.index'
 import { Route as DashboardPropertiesIndexRouteImport } from './routes/dashboard.properties.index'
 import { Route as DashboardPropertiesIdRouteImport } from './routes/dashboard.properties.$id'
@@ -53,6 +55,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentStatusRoute = PaymentStatusRouteImport.update({
+  id: '/payment-status',
+  path: '/payment-status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -95,6 +102,12 @@ const PSlugRoute = PSlugRouteImport.update({
   path: '/p/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCashfreeWebhookRoute =
+  ApiPublicCashfreeWebhookRouteImport.update({
+    id: '/api/public/cashfree-webhook',
+    path: '/api/public/cashfree-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const BSubdomainIndexRoute = BSubdomainIndexRouteImport.update({
   id: '/b/$subdomain/',
   path: '/b/$subdomain/',
@@ -138,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/terms': typeof TermsRoute
@@ -146,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/team': typeof DashboardTeamRoute
   '/p/$slug': typeof PSlugRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/cashfree-webhook': typeof ApiPublicCashfreeWebhookRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
   '/b/$subdomain/': typeof BSubdomainIndexRoute
@@ -159,6 +174,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/onboarding': typeof OnboardingRoute
+  '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/terms': typeof TermsRoute
@@ -167,6 +183,7 @@ export interface FileRoutesByTo {
   '/dashboard/team': typeof DashboardTeamRoute
   '/p/$slug': typeof PSlugRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/api/public/cashfree-webhook': typeof ApiPublicCashfreeWebhookRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
   '/b/$subdomain': typeof BSubdomainIndexRoute
@@ -182,6 +199,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/payment-status': typeof PaymentStatusRoute
   '/pricing': typeof PricingRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/terms': typeof TermsRoute
@@ -190,6 +208,7 @@ export interface FileRoutesById {
   '/dashboard/team': typeof DashboardTeamRoute
   '/p/$slug': typeof PSlugRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/cashfree-webhook': typeof ApiPublicCashfreeWebhookRoute
   '/dashboard/properties/$id': typeof DashboardPropertiesIdRoute
   '/dashboard/properties/new': typeof DashboardPropertiesNewRoute
   '/b/$subdomain/': typeof BSubdomainIndexRoute
@@ -206,6 +225,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/onboarding'
+    | '/payment-status'
     | '/pricing'
     | '/refund-policy'
     | '/terms'
@@ -214,6 +234,7 @@ export interface FileRouteTypes {
     | '/dashboard/team'
     | '/p/$slug'
     | '/dashboard/'
+    | '/api/public/cashfree-webhook'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
     | '/b/$subdomain/'
@@ -227,6 +248,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/onboarding'
+    | '/payment-status'
     | '/pricing'
     | '/refund-policy'
     | '/terms'
@@ -235,6 +257,7 @@ export interface FileRouteTypes {
     | '/dashboard/team'
     | '/p/$slug'
     | '/dashboard'
+    | '/api/public/cashfree-webhook'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
     | '/b/$subdomain'
@@ -249,6 +272,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/onboarding'
+    | '/payment-status'
     | '/pricing'
     | '/refund-policy'
     | '/terms'
@@ -257,6 +281,7 @@ export interface FileRouteTypes {
     | '/dashboard/team'
     | '/p/$slug'
     | '/dashboard/'
+    | '/api/public/cashfree-webhook'
     | '/dashboard/properties/$id'
     | '/dashboard/properties/new'
     | '/b/$subdomain/'
@@ -272,10 +297,12 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
+  PaymentStatusRoute: typeof PaymentStatusRoute
   PricingRoute: typeof PricingRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
   TermsRoute: typeof TermsRoute
   PSlugRoute: typeof PSlugRoute
+  ApiPublicCashfreeWebhookRoute: typeof ApiPublicCashfreeWebhookRoute
   BSubdomainIndexRoute: typeof BSubdomainIndexRoute
   ApiPublicBrochureIdRoute: typeof ApiPublicBrochureIdRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
@@ -317,6 +344,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-status': {
+      id: '/payment-status'
+      path: '/payment-status'
+      fullPath: '/payment-status'
+      preLoaderRoute: typeof PaymentStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -373,6 +407,13 @@ declare module '@tanstack/react-router' {
       path: '/p/$slug'
       fullPath: '/p/$slug'
       preLoaderRoute: typeof PSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cashfree-webhook': {
+      id: '/api/public/cashfree-webhook'
+      path: '/api/public/cashfree-webhook'
+      fullPath: '/api/public/cashfree-webhook'
+      preLoaderRoute: typeof ApiPublicCashfreeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/b/$subdomain/': {
@@ -457,10 +498,12 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
+  PaymentStatusRoute: PaymentStatusRoute,
   PricingRoute: PricingRoute,
   RefundPolicyRoute: RefundPolicyRoute,
   TermsRoute: TermsRoute,
   PSlugRoute: PSlugRoute,
+  ApiPublicCashfreeWebhookRoute: ApiPublicCashfreeWebhookRoute,
   BSubdomainIndexRoute: BSubdomainIndexRoute,
   ApiPublicBrochureIdRoute: ApiPublicBrochureIdRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,

@@ -62,6 +62,7 @@ export type Database = {
       agency_subscriptions: {
         Row: {
           agency_owner_id: string
+          cashfree_subscription_id: string | null
           created_at: string
           current_period_end: string | null
           current_period_start: string | null
@@ -76,6 +77,7 @@ export type Database = {
         }
         Insert: {
           agency_owner_id: string
+          cashfree_subscription_id?: string | null
           created_at?: string
           current_period_end?: string | null
           current_period_start?: string | null
@@ -90,6 +92,7 @@ export type Database = {
         }
         Update: {
           agency_owner_id?: string
+          cashfree_subscription_id?: string | null
           created_at?: string
           current_period_end?: string | null
           current_period_start?: string | null
@@ -242,8 +245,11 @@ export type Database = {
         Row: {
           amount_paise: number
           broker_id: string
+          cashfree_order_id: string | null
+          cashfree_payment_id: string | null
           created_at: string
           credits_granted: number
+          customer_email: string | null
           id: string
           pack_type: Database["public"]["Enums"]["credit_pack"]
           razorpay_order_id: string | null
@@ -253,8 +259,11 @@ export type Database = {
         Insert: {
           amount_paise?: number
           broker_id: string
+          cashfree_order_id?: string | null
+          cashfree_payment_id?: string | null
           created_at?: string
           credits_granted?: number
+          customer_email?: string | null
           id?: string
           pack_type: Database["public"]["Enums"]["credit_pack"]
           razorpay_order_id?: string | null
@@ -264,8 +273,11 @@ export type Database = {
         Update: {
           amount_paise?: number
           broker_id?: string
+          cashfree_order_id?: string | null
+          cashfree_payment_id?: string | null
           created_at?: string
           credits_granted?: number
+          customer_email?: string | null
           id?: string
           pack_type?: Database["public"]["Enums"]["credit_pack"]
           razorpay_order_id?: string | null
@@ -608,6 +620,14 @@ export type Database = {
       pending_agency_invite: { Args: never; Returns: Json }
       publish_property: { Args: { _property_id: string }; Returns: Json }
       remove_agency_member: { Args: { _member_id: string }; Returns: Json }
+      settle_credit_purchase: {
+        Args: {
+          _cashfree_order_id: string
+          _cashfree_payment_id: string
+          _status: string
+        }
+        Returns: Json
+      }
       track_property_event: {
         Args: {
           _event_type: Database["public"]["Enums"]["event_type"]

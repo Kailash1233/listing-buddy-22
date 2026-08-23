@@ -1,7 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { useAuth } from "@/hooks/useAuth";
+import { createPackCheckout } from "@/lib/payments.functions";
+import { openCashfreeCheckout } from "@/lib/cashfree-checkout";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/marketing";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
@@ -37,7 +41,33 @@ export const Route = createFileRoute("/pricing")({
 });
 
 function comingSoon() {
-  toast.info("Card payments switch on shortly — we'll email you the moment checkout is live.");
+  toast.info("Agency subscriptions open shortly — message us on WhatsApp and we'll set you up today.");
+}
+
+/** Starts a Cashfree checkout for a one-time listing credit pack. */
+export function usePackCheckout() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const startCheckout = useServerFn(createPackCheckout);
+  const [busy, setBusy] = useState(false);
+
+  const buy = async (packId: "starter" | "launch") => {
+    if (!user) {
+      toast.info("Create your free account first — then you can top up credits.");
+      void navigate({ to: "/auth", search: { mode: "signup" } });
+      return;
+    }
+    setBusy(true);
+    try {
+      const order = await startCheckout({ data: { packId } });
+      await openCashfreeCheckout(order.paymentSessionId, order.mode as "sandbox" | "production");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not start the payment.");
+      setBusy(false);
+    }
+  };
+
+  return { buy, busy };
 }
 
 const INCLUDED = [
@@ -113,6 +143,7 @@ function PricingPage() {
 function SoloCard() {
   const packs = [SOLO_PACKS.free, SOLO_PACKS.starter, SOLO_PACKS.launch];
   const [selected, setSelected] = useState<SoloPackId>("launch");
+  const { buy, busy } = usePackCheckout();
   const pack = SOLO_PACKS[selected];
   const offer = isOfferLive(pack);
   const ends = formatDate(pack.offerEndsAt);
@@ -178,7 +209,13 @@ function SoloCard() {
         <p className="mt-5 text-sm text-muted-foreground">{pack.note}</p>
 
         {pack.purchasable ? (
-          <Button size="lg" className="mt-5 w-full" onClick={comingSoon}>
+          <Button
+            size="lg"
+            className="mt-5 w-full"
+            disabled={busy}
+            onClick={() => void buy(pack.id as "starter" | "launch")}
+          >
+            {busy ? <Loader2 className="size-4 animate-spin" /> : null}
             Buy {pack.credits} listings — {rupees(pack.amountPaise)}
           </Button>
         ) : (
