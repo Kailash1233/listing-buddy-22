@@ -4,6 +4,7 @@ import { Check, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/marketing";
+import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import {
   AGENCY_PLANS,
   SALES_WHATSAPP_URL,
