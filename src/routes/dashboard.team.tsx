@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Building2, Crown, Loader2, Mail, Trash2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { inviteAgencyMember } from "@/lib/agency.functions";
 import { useAgency } from "@/hooks/useAgency";
 import { useBroker } from "@/hooks/useBroker";
 import { AGENCY_PLANS } from "@/lib/pricing";
@@ -39,6 +40,7 @@ const INVITE_ERRORS: Record<string, string> = {
   already_invited: "That email is already invited.",
   invalid_email: "Enter a valid email address.",
   unauthenticated: "Please sign in again.",
+  rate_limited: "Too many invites sent recently. Please try again shortly.",
 };
 
 function TeamPage() {
@@ -57,7 +59,10 @@ function TeamPage() {
       .update({ account_type: "agency", agency_seat_role: "owner" })
       .eq("id", broker!.id);
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     void qc.invalidateQueries({ queryKey: ["broker", broker!.id] });
     toast.success("Agency mode enabled. Pick a plan to unlock seats.");
   }
@@ -77,22 +82,24 @@ function TeamPage() {
 
   async function sendInvite() {
     setBusy(true);
-    const { data, error } = await supabase.rpc("invite_agency_member", { _email: email });
+    const res = await inviteAgencyMember({ data: { email } }).catch(() => null);
     setBusy(false);
-    const res = data as { ok: boolean; reason?: string } | null;
-    if (error || !res?.ok) {
+    if (!res?.ok) {
       toast.error(INVITE_ERRORS[res?.reason ?? ""] ?? "Could not send the invite.");
       return;
     }
     setEmail("");
     void qc.invalidateQueries({ queryKey: ["agency-members", ownerId] });
-    toast.success("Seat invited. They join by signing up with that email.");
+    toast.success("Invite email sent. They join by signing up with that email.");
   }
 
   async function removeMember(id: string) {
     const { data, error } = await supabase.rpc("remove_agency_member", { _member_id: id });
     const res = data as { ok: boolean } | null;
-    if (error || !res?.ok) { toast.error("Could not remove that teammate."); return; }
+    if (error || !res?.ok) {
+      toast.error("Could not remove that teammate.");
+      return;
+    }
     void qc.invalidateQueries({ queryKey: ["agency-members", ownerId] });
     void qc.invalidateQueries({ queryKey: ["agency-teammates", ownerId] });
     toast.success("Teammate removed.");
@@ -123,8 +130,8 @@ function TeamPage() {
           <div>
             <p className="font-semibold">You're on a solo account</p>
             <p className="text-sm text-muted-foreground">
-              Agency mode gives your team a shared monthly listing pool, sub-agent seats and one team
-              dashboard.
+              Agency mode gives your team a shared monthly listing pool, sub-agent seats and one
+              team dashboard.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -159,8 +166,7 @@ function TeamPage() {
   const seatsUsed = (members.data ?? []).length;
   const seatLimit = sub?.seat_limit ?? 0;
   const listings = pool.data ?? [];
-  const nameOf = (id: string) =>
-    teammates.data?.find((t) => t.id === id)?.name ?? "Teammate";
+  const nameOf = (id: string) => teammates.data?.find((t) => t.id === id)?.name ?? "Teammate";
 
   return (
     <div className="space-y-8">
@@ -170,7 +176,9 @@ function TeamPage() {
         <div className="surface space-y-3 p-5">
           <div className="flex items-center justify-between">
             <p className="font-semibold">Shared listing pool</p>
-            <Badge variant="secondary">{sub ? AGENCY_PLANS[sub.plan].name : "No active plan"}</Badge>
+            <Badge variant="secondary">
+              {sub ? AGENCY_PLANS[sub.plan].name : "No active plan"}
+            </Badge>
           </div>
           <Progress value={poolSize ? Math.min(100, (used / poolSize) * 100) : 0} />
           <p className="text-sm text-muted-foreground">
@@ -215,7 +223,8 @@ function TeamPage() {
               />
             </div>
             <Button onClick={sendInvite} disabled={busy || !email.trim()}>
-              {busy ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />} Invite
+              {busy ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}{" "}
+              Invite
             </Button>
           </div>
 

@@ -29,9 +29,8 @@ export const signUpBroker = createServerFn({ method: "POST" })
     }
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { sendSignupConfirmationEmail, sendAccountExistsEmail } = await import(
-      "@/lib/auth-email.server"
-    );
+    const { sendSignupConfirmationEmail, sendAccountExistsEmail } =
+      await import("@/lib/auth-email.server");
     const { requestOrigin } = await import("@/lib/request-origin");
 
     const redirectTo = `${requestOrigin()}/dashboard`;
@@ -93,6 +92,36 @@ export const resendConfirmation = createServerFn({ method: "POST" })
     }
 
     const sent = await sendSignupConfirmationEmail(data.email, link.properties.action_link);
+    if (!sent) return { ok: false, message: "Could not send the email. Please try again shortly." };
+    return { ok: true };
+  });
+
+export const requestPasswordReset = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => emailInput.parse(data))
+  .handler(async ({ data }): Promise<SignUpResult> => {
+    const { allow } = await import("@/lib/rate-limit.server");
+    if (!(await allow("password_reset", data.email, 3, 600))) {
+      return { ok: false, message: "Please wait a bit before requesting another email." };
+    }
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { sendPasswordResetEmail } = await import("@/lib/auth-email.server");
+    const { requestOrigin } = await import("@/lib/request-origin");
+
+    const redirectTo = `${requestOrigin()}/reset-password`;
+
+    const { data: link, error } = await supabaseAdmin.auth.admin.generateLink({
+      type: "recovery",
+      email: data.email,
+      options: { redirectTo },
+    });
+
+    if (error || !link?.properties?.action_link) {
+      // Anti-enumeration: an unknown email must look identical to success.
+      return { ok: true };
+    }
+
+    const sent = await sendPasswordResetEmail(data.email, link.properties.action_link);
     if (!sent) return { ok: false, message: "Could not send the email. Please try again shortly." };
     return { ok: true };
   });

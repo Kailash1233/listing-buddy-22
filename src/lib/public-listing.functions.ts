@@ -21,6 +21,9 @@ const leadInput = z.object({
     .regex(/^\d{10,15}$/),
   message: z.string().trim().max(1000).nullable().optional(),
   budgetMax: z.number().int().positive().max(100_000_000_000).nullable().optional(),
+  // Honeypot: a field real visitors never see or fill in. Bots that
+  // auto-fill every input on the form trip it — see LeadForm's hidden input.
+  website: z.string().trim().max(200).optional(),
 });
 
 export const getPublicListing = createServerFn({ method: "GET" })
@@ -75,6 +78,10 @@ export const trackPublicEvent = createServerFn({ method: "POST" })
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => leadInput.parse(data))
   .handler(async ({ data }) => {
+    // Pretend success without touching the DB or rate limiter — never tip
+    // off a bot that its submission was recognized as spam.
+    if (data.website) return { ok: true as const };
+
     const { clientIp, allow } = await import("@/lib/rate-limit.server");
     const ip = clientIp();
     if (!(await allow("lead", ip, 5, 3600))) {

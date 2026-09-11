@@ -92,3 +92,30 @@ export async function sendAccountExistsEmail(to: string): Promise<boolean> {
   );
   return sendViaResend({ to, subject: "You already have a PropertyGenie account", html });
 }
+
+/** Password reset — clicking the link signs the user in so they can set a new password. */
+export async function sendPasswordResetEmail(to: string, actionLink: string): Promise<boolean> {
+  const html = shell(
+    "Reset your password",
+    `<p>We got a request to reset the password on your PropertyGenie account.</p>
+     ${button(actionLink, "Reset password")}
+     <p style="font-size:12px;color:#777">Or paste this link into your browser:<br>${escapeHtml(actionLink)}</p>`,
+  );
+  return sendViaResend({ to, subject: "Reset your password — PropertyGenie", html });
+}
+
+/** Sent when an agency owner invites a sub-agent by email. */
+export async function sendAgencyInviteEmail(
+  to: string,
+  agencyName: string,
+  origin: string,
+): Promise<boolean> {
+  const signupLink = `${origin}/auth?mode=signup`;
+  const html = shell(
+    "You've been invited to a PropertyGenie team",
+    `<p><strong>${escapeHtml(agencyName)}</strong> invited you to join their team on PropertyGenie.</p>
+     <p>Sign up with this email address (${escapeHtml(to)}) and you'll join their shared listing pool automatically.</p>
+     ${button(signupLink, "Create your account")}`,
+  );
+  return sendViaResend({ to, subject: `${agencyName} invited you to PropertyGenie`, html });
+}
