@@ -21,17 +21,18 @@ import home7 from "@/assets/home-7.png.asset.json";
 import home8 from "@/assets/home-8.png.asset.json";
 import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Plotly — Turn listings into a digital sales catalogue" },
+      { title: "PropertyGenie — Turn listings into a digital sales catalogue" },
       {
         name: "description",
         content:
           "Chennai brokers: paste a rough WhatsApp note, get a polished property page, a ready share message and a PDF brochure. Leads land in your inbox.",
       },
-      { property: "og:title", content: "Plotly — Property microsites for brokers" },
+      { property: "og:title", content: "PropertyGenie — Property microsites for brokers" },
       {
         property: "og:description",
         content:
@@ -57,10 +58,8 @@ function Landing() {
       <header className="sticky top-0 z-30 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 text-lg font-extrabold tracking-tight">
-            <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
-              P
-            </span>
-            Plotly
+            <Logo />
+            PropertyGenie
           </Link>
           <nav className="flex items-center gap-1 sm:gap-4">
             <button
@@ -198,12 +197,12 @@ function HeroPage() {
         Share your property better. Get more enquiries from Whatsapp.
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        Paste the same rough note you&apos;d send a buyer. Plotly writes the listing, builds a
+        Paste the same rough note you&apos;d send a buyer. PropertyGenie writes the listing, builds a
         property page, a share message and a PDF brochure — in seconds.
       </p>
 
       <div className="mx-auto mt-6 w-full overflow-hidden rounded-3xl border border-border bg-card text-left text-card-foreground">
-        <img src={home4.url} alt="Example Plotly property page cover" className="h-40 w-full object-cover" />
+        <img src={home4.url} alt="Example PropertyGenie property page cover" className="h-40 w-full object-cover" />
         <div className="space-y-3 p-4">
           <div className="flex items-center justify-between">
             <p className="text-xl font-extrabold text-primary">₹1.4 Crore</p>

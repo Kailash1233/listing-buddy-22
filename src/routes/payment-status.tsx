@@ -15,10 +15,10 @@ export const Route = createFileRoute("/payment-status")({
   }),
   head: () => ({
     meta: [
-      { title: "Payment status — Plotly" },
-      { name: "description", content: "Confirming your Plotly listing credit purchase." },
-      { property: "og:title", content: "Payment status — Plotly" },
-      { property: "og:description", content: "Confirming your Plotly listing credit purchase." },
+      { title: "Payment status — PropertyGenie" },
+      { name: "description", content: "Confirming your PropertyGenie listing credit purchase." },
+      { property: "og:title", content: "Payment status — PropertyGenie" },
+      { property: "og:description", content: "Confirming your PropertyGenie listing credit purchase." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

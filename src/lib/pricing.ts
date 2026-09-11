@@ -1,5 +1,5 @@
 /**
- * Single source of truth for all Plotly pricing.
+ * Single source of truth for all PropertyGenie pricing.
  * Change numbers here — never hardcode prices or credit counts in components.
  * The server re-reads this file when creating orders; client values are display only.
  */
@@ -99,7 +99,7 @@ export const AGENCY_PLANS: Record<AgencyPlanId, AgencyPlan> = {
 /** Sales contact for the Enterprise tier. */
 export const SALES_WHATSAPP = "918190069737";
 export const SALES_WHATSAPP_URL = `https://wa.me/${SALES_WHATSAPP}?text=${encodeURIComponent(
-  "Hi Plotly team, I'd like to talk about the Enterprise plan.",
+  "Hi PropertyGenie team, I'd like to talk about the Enterprise plan.",
 )}`;
 
 export function rupees(paise: number): string {

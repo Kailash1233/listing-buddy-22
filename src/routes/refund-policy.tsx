@@ -5,16 +5,16 @@ import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 export const Route = createFileRoute("/refund-policy")({
   head: () => ({
     meta: [
-      { title: "Refunds & Cancellation — Plotly by Adszoo" },
+      { title: "Refunds & Cancellation — PropertyGenie by Adszoo" },
       {
         name: "description",
         content:
-          "Refund and cancellation policy for Plotly listing credit packs and agency subscription plans.",
+          "Refund and cancellation policy for PropertyGenie listing credit packs and agency subscription plans.",
       },
-      { property: "og:title", content: "Refunds & Cancellation — Plotly by Adszoo" },
+      { property: "og:title", content: "Refunds & Cancellation — PropertyGenie by Adszoo" },
       {
         property: "og:description",
-        content: "Refund and cancellation policy for Plotly listing credit packs and agency subscription plans.",
+        content: "Refund and cancellation policy for PropertyGenie listing credit packs and agency subscription plans.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -46,7 +46,7 @@ function RefundPolicyPage() {
             <section>
               <h2 className="text-lg font-bold">1. One-time listing credit packs</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Plotly sells one-time listing credit packs such as the Starter Pack and Launch Pack. These packs add a fixed number of listing credits to your account. Credits are digital goods and are added to your account immediately after a successful payment.
+                PropertyGenie sells one-time listing credit packs such as the Starter Pack and Launch Pack. These packs add a fixed number of listing credits to your account. Credits are digital goods and are added to your account immediately after a successful payment.
               </p>
             </section>
 
@@ -57,7 +57,7 @@ function RefundPolicyPage() {
                 <a href="mailto:askar@adszoo.in" className="text-primary hover:underline">
                   askar@adszoo.in
                 </a>{" "}
-                from the email address associated with your Plotly account, along with the order reference.
+                from the email address associated with your PropertyGenie account, along with the order reference.
               </p>
             </section>
 

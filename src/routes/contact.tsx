@@ -11,16 +11,16 @@ import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Us — Plotly by Adszoo" },
+      { title: "Contact Us — PropertyGenie by Adszoo" },
       {
         name: "description",
         content:
-          "Get in touch with the Plotly team at Adszoo. Support email, phone and business address for Chennai.",
+          "Get in touch with the PropertyGenie team at Adszoo. Support email, phone and business address for Chennai.",
       },
-      { property: "og:title", content: "Contact Us — Plotly by Adszoo" },
+      { property: "og:title", content: "Contact Us — PropertyGenie by Adszoo" },
       {
         property: "og:description",
-        content: "Get in touch with the Plotly team at Adszoo.",
+        content: "Get in touch with the PropertyGenie team at Adszoo.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -40,7 +40,7 @@ function ContactPage() {
       `Name: ${name}\nEmail: ${email}\n\n${message}`,
     );
     window.location.href = `mailto:askar@adszoo.in?subject=${encodeURIComponent(
-      `Plotly enquiry from ${name || "website"}`,
+      `PropertyGenie enquiry from ${name || "website"}`,
     )}&body=${body}`;
   }
 
@@ -56,7 +56,7 @@ function ContactPage() {
               Contact Us
             </h1>
             <p className="mx-auto mt-4 max-w-xl opacity-70">
-              Questions about Plotly? We&apos;re here to help.
+              Questions about PropertyGenie? We&apos;re here to help.
             </p>
           </div>
         </div>
@@ -67,7 +67,7 @@ function ContactPage() {
               <div>
                 <h2 className="text-2xl font-extrabold">Adszoo</h2>
                 <p className="mt-2 text-muted-foreground">
-                  Plotly is built and operated by Adszoo, a Chennai-based proptech company.
+                  PropertyGenie is built and operated by Adszoo, a Chennai-based proptech company.
                 </p>
               </div>
 

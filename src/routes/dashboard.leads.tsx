@@ -22,9 +22,9 @@ import {
 export const Route = createFileRoute("/dashboard/leads")({
   head: () => ({
     meta: [
-      { title: "Enquiries — Plotly" },
+      { title: "Enquiries — PropertyGenie" },
       { name: "description", content: "Every buyer enquiry from your property pages, with one-tap WhatsApp reply." },
-      { property: "og:title", content: "Enquiries — Plotly" },
+      { property: "og:title", content: "Enquiries — PropertyGenie" },
       { property: "og:description", content: "Every buyer enquiry from your property pages, with one-tap WhatsApp reply." },
     ],
   }),

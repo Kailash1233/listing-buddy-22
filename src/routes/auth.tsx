@@ -5,22 +5,28 @@ import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { signUpBroker, resendConfirmation } from "@/lib/auth.functions";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: z.object({ mode: z.enum(["login", "signup"]).optional() }),
   head: () => ({
     meta: [
-      { title: "Log in or sign up — Plotly for brokers" },
+      { title: "Log in or sign up — PropertyGenie for brokers" },
       {
         name: "description",
-        content: "Access your Plotly broker dashboard to publish property pages and track leads.",
+        content:
+          "Access your PropertyGenie broker dashboard to publish property pages and track leads.",
       },
-      { property: "og:title", content: "Broker login — Plotly" },
-      { property: "og:description", content: "Publish property microsites and capture buyer enquiries." },
+      { property: "og:title", content: "Broker login — PropertyGenie" },
+      {
+        property: "og:description",
+        content: "Publish property microsites and capture buyer enquiries.",
+      },
     ],
   }),
   component: AuthPage,
@@ -52,18 +58,14 @@ function AuthPage() {
     setBusy(true);
     try {
       if (isSignup) {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard` },
-        });
-        if (error) throw error;
-        if (!data.session) {
-          setAwaitingConfirm(true);
-          toast.success("Check your inbox to confirm your email.");
+        const result = await signUpBroker({ data: { email, password } });
+        if (!result.ok) {
+          toast.error(result.message);
           return;
         }
-        toast.success("Account created. Let's set up your profile.");
+        setAwaitingConfirm(true);
+        toast.success("Check your inbox to confirm your email.");
+        return;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
@@ -83,12 +85,8 @@ function AuthPage() {
   }
 
   async function resend() {
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
-    });
-    if (error) toast.error(error.message);
+    const result = await resendConfirmation({ data: { email } });
+    if (!result.ok) toast.error(result.message);
     else toast.success("Confirmation email sent again.");
   }
 
@@ -96,18 +94,16 @@ function AuthPage() {
     <div className="hero-gradient flex min-h-screen items-center justify-center px-5 py-12">
       <div className="w-full max-w-md">
         <Link to="/" className="mb-6 flex items-center justify-center gap-2 text-lg font-extrabold">
-          <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-            P
-          </span>
-          Plotly
+          <Logo />
+          PropertyGenie
         </Link>
         <div className="surface p-7">
           {awaitingConfirm ? (
             <div className="text-center">
               <h1 className="text-2xl font-bold">Confirm your email</h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                We sent a confirmation link to <span className="font-semibold">{email}</span>. Click it to
-                activate your account, then log in.
+                We sent a confirmation link to <span className="font-semibold">{email}</span>. Click
+                it to confirm your email — you'll be signed in automatically.
               </p>
               <Button variant="outline" className="mt-6 w-full" onClick={resend}>
                 Resend confirmation email
@@ -125,7 +121,9 @@ function AuthPage() {
             </div>
           ) : (
             <>
-              <h1 className="text-2xl font-bold">{isSignup ? "Create your account" : "Welcome back"}</h1>
+              <h1 className="text-2xl font-bold">
+                {isSignup ? "Create your account" : "Welcome back"}
+              </h1>
               <p className="mt-1 text-sm text-muted-foreground">
                 {isSignup
                   ? "Publish your first property page in a couple of minutes."
@@ -211,4 +209,3 @@ function AuthPage() {
     </div>
   );
 }
-

@@ -6,6 +6,7 @@ import { useBroker } from "@/hooks/useBroker";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { NotificationBell } from "@/components/NotificationBell";
+import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
@@ -63,10 +64,8 @@ function DashboardLayout() {
       <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
           <Link to="/dashboard" className="flex items-center gap-2 font-extrabold">
-            <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-              P
-            </span>
-            <span className="hidden sm:inline">Plotly</span>
+            <Logo />
+            <span className="hidden sm:inline">PropertyGenie</span>
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">

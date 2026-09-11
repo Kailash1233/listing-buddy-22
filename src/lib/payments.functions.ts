@@ -25,7 +25,7 @@ export const createPackCheckout = createServerFn({ method: "POST" })
     if (brokerError || !broker) throw new Error("Finish setting up your profile before buying credits.");
 
     const email = (context.claims["email"] as string | undefined) ?? "";
-    const orderId = `plotly_${data.packId}_${Date.now()}_${context.userId.slice(0, 8)}`;
+    const orderId = `propertygenie_${data.packId}_${Date.now()}_${context.userId.slice(0, 8)}`;
 
     const { error: insertError } = await supabaseAdmin.from("credit_purchases").insert({
       broker_id: broker.id,
@@ -45,7 +45,7 @@ export const createPackCheckout = createServerFn({ method: "POST" })
       amountRupees: pack.amountPaise / 100,
       customer: {
         id: broker.id,
-        name: broker.name || "Plotly user",
+        name: broker.name || "PropertyGenie user",
         phone: phone.length === 10 ? phone : "9999999999",
         email: email || "no-reply@adszoo.in",
       },
