@@ -21,13 +21,13 @@ import {
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — Plotly listing packs & agency plans" },
+      { title: "Pricing — PropertyGenie listing packs & agency plans" },
       {
         name: "description",
         content:
           "Pay per listing pack — ₹299 for 10 listings or ₹499 for 30. Credits never expire. Agency plans from ₹999/month with a shared listing pool.",
       },
-      { property: "og:title", content: "Pricing — Plotly listing packs & agency plans" },
+      { property: "og:title", content: "Pricing — PropertyGenie listing packs & agency plans" },
       {
         property: "og:description",
         content:

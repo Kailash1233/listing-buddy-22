@@ -5,16 +5,16 @@ import { PoweredByAdszoo } from "@/components/PoweredByAdszoo";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms & Conditions — Plotly by Adszoo" },
+      { title: "Terms & Conditions — PropertyGenie by Adszoo" },
       {
         name: "description",
         content:
-          "Terms and conditions for using Plotly, the property microsite builder for independent real-estate brokers in Chennai.",
+          "Terms and conditions for using PropertyGenie, the property microsite builder for independent real-estate brokers in Chennai.",
       },
-      { property: "og:title", content: "Terms & Conditions — Plotly by Adszoo" },
+      { property: "og:title", content: "Terms & Conditions — PropertyGenie by Adszoo" },
       {
         property: "og:description",
-        content: "Terms and conditions for using Plotly.",
+        content: "Terms and conditions for using PropertyGenie.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -46,7 +46,7 @@ function TermsPage() {
             <section>
               <h2 className="text-lg font-bold">1. Service description</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Plotly is a software-as-a-service product operated by Adszoo. It allows independent real-estate brokers and agencies in India to create single-property microsites, generate WhatsApp share copy and PDF brochures, and capture buyer enquiries. Plotly is not a real-estate marketplace, CRM, or transaction facilitator.
+                PropertyGenie is a software-as-a-service product operated by Adszoo. It allows independent real-estate brokers and agencies in India to create single-property microsites, generate WhatsApp share copy and PDF brochures, and capture buyer enquiries. PropertyGenie is not a real-estate marketplace, CRM, or transaction facilitator.
               </p>
             </section>
 
@@ -67,14 +67,14 @@ function TermsPage() {
             <section>
               <h2 className="text-lg font-bold">4. Listing credits and usage</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Plotly operates on a credit model. Free credits are granted at signup. Paid listing packs are one-time purchases that add credits to your account. Credits do not expire unless otherwise stated. Agency plans receive a shared pool of credits that resets each billing cycle according to the selected plan.
+                PropertyGenie operates on a credit model. Free credits are granted at signup. Paid listing packs are one-time purchases that add credits to your account. Credits do not expire unless otherwise stated. Agency plans receive a shared pool of credits that resets each billing cycle according to the selected plan.
               </p>
             </section>
 
             <section>
               <h2 className="text-lg font-bold">5. Acceptable use</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                You may not use Plotly to publish false, misleading, discriminatory, or illegal content. You may not scrape, reverse-engineer, or overload the platform. All property information, photos, and contact details must be accurate and must not infringe on third-party rights.
+                You may not use PropertyGenie to publish false, misleading, discriminatory, or illegal content. You may not scrape, reverse-engineer, or overload the platform. All property information, photos, and contact details must be accurate and must not infringe on third-party rights.
               </p>
             </section>
 
@@ -88,7 +88,7 @@ function TermsPage() {
             <section>
               <h2 className="text-lg font-bold">7. Limitation of liability</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Plotly provides tools for brokers to share listings. Adszoo is not a party to any transaction between a broker and a buyer, and does not verify property details, ownership documents, or RERA registrations. To the extent permitted by law, Adszoo&apos;s liability is limited to the amount paid by you to Adszoo in the 12 months preceding the claim.
+                PropertyGenie provides tools for brokers to share listings. Adszoo is not a party to any transaction between a broker and a buyer, and does not verify property details, ownership documents, or RERA registrations. To the extent permitted by law, Adszoo&apos;s liability is limited to the amount paid by you to Adszoo in the 12 months preceding the claim.
               </p>
             </section>
 

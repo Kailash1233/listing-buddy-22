@@ -578,7 +578,7 @@ export function PropertyEditor({
           placeholder="TN/29/Building/0123/2023"
         />
         <p className="text-xs text-muted-foreground">
-          Shown to buyers as broker-provided. Plotly does not verify RERA numbers.
+          Shown to buyers as broker-provided. PropertyGenie does not verify RERA numbers.
         </p>
       </div>
 

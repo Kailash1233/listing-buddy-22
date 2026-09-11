@@ -13,9 +13,9 @@ import { PropertyCard } from "@/components/PropertyCard";
 export const Route = createFileRoute("/dashboard/properties/")({
   head: () => ({
     meta: [
-      { title: "Your properties — Plotly" },
+      { title: "Your properties — PropertyGenie" },
       { name: "description", content: "Every listing you've created, with its own shareable page and brochure." },
-      { property: "og:title", content: "Your properties — Plotly" },
+      { property: "og:title", content: "Your properties — PropertyGenie" },
       { property: "og:description", content: "Every listing you've created, with its own shareable page and brochure." },
     ],
   }),

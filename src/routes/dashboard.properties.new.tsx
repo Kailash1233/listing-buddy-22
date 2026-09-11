@@ -7,9 +7,9 @@ import { PropertyEditor } from "@/components/PropertyEditor";
 export const Route = createFileRoute("/dashboard/properties/new")({
   head: () => ({
     meta: [
-      { title: "Add a property — Plotly" },
+      { title: "Add a property — PropertyGenie" },
       { name: "description", content: "Paste a rough description or fill the form to publish a property page in minutes." },
-      { property: "og:title", content: "Add a property — Plotly" },
+      { property: "og:title", content: "Add a property — PropertyGenie" },
       { property: "og:description", content: "Paste a rough description or fill the form to publish a property page in minutes." },
     ],
   }),

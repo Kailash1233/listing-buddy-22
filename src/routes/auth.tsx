@@ -5,22 +5,28 @@ import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { signUpBroker, resendConfirmation, requestPasswordReset } from "@/lib/auth.functions";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: z.object({ mode: z.enum(["login", "signup"]).optional() }),
   head: () => ({
     meta: [
-      { title: "Log in or sign up — Plotly for brokers" },
+      { title: "Log in or sign up — PropertyGenie for brokers" },
       {
         name: "description",
-        content: "Access your Plotly broker dashboard to publish property pages and track leads.",
+        content:
+          "Access your PropertyGenie broker dashboard to publish property pages and track leads.",
       },
-      { property: "og:title", content: "Broker login — Plotly" },
-      { property: "og:description", content: "Publish property microsites and capture buyer enquiries." },
+      { property: "og:title", content: "Broker login — PropertyGenie" },
+      {
+        property: "og:description",
+        content: "Publish property microsites and capture buyer enquiries.",
+      },
     ],
   }),
   component: AuthPage,
@@ -36,6 +42,8 @@ function AuthPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [awaitingConfirm, setAwaitingConfirm] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   const { session, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -52,18 +60,14 @@ function AuthPage() {
     setBusy(true);
     try {
       if (isSignup) {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard` },
-        });
-        if (error) throw error;
-        if (!data.session) {
-          setAwaitingConfirm(true);
-          toast.success("Check your inbox to confirm your email.");
+        const result = await signUpBroker({ data: { email, password } });
+        if (!result.ok) {
+          toast.error(result.message);
           return;
         }
-        toast.success("Account created. Let's set up your profile.");
+        setAwaitingConfirm(true);
+        toast.success("Check your inbox to confirm your email.");
+        return;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
@@ -83,31 +87,37 @@ function AuthPage() {
   }
 
   async function resend() {
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
-    });
-    if (error) toast.error(error.message);
+    const result = await resendConfirmation({ data: { email } });
+    if (!result.ok) toast.error(result.message);
     else toast.success("Confirmation email sent again.");
+  }
+
+  async function submitForgot(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    const result = await requestPasswordReset({ data: { email } });
+    setBusy(false);
+    if (!result.ok) {
+      toast.error(result.message);
+      return;
+    }
+    setResetSent(true);
   }
 
   return (
     <div className="hero-gradient flex min-h-screen items-center justify-center px-5 py-12">
       <div className="w-full max-w-md">
         <Link to="/" className="mb-6 flex items-center justify-center gap-2 text-lg font-extrabold">
-          <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-            P
-          </span>
-          Plotly
+          <Logo />
+          PropertyGenie
         </Link>
         <div className="surface p-7">
           {awaitingConfirm ? (
             <div className="text-center">
               <h1 className="text-2xl font-bold">Confirm your email</h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                We sent a confirmation link to <span className="font-semibold">{email}</span>. Click it to
-                activate your account, then log in.
+                We sent a confirmation link to <span className="font-semibold">{email}</span>. Click
+                it to confirm your email — you'll be signed in automatically.
               </p>
               <Button variant="outline" className="mt-6 w-full" onClick={resend}>
                 Resend confirmation email
@@ -123,9 +133,59 @@ function AuthPage() {
                 Back to log in
               </button>
             </div>
+          ) : resetSent ? (
+            <div className="text-center">
+              <h1 className="text-2xl font-bold">Check your email</h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                If <span className="font-semibold">{email}</span> has a PropertyGenie account, we've
+                sent a link to reset the password. It signs you in automatically.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setResetSent(false);
+                  setForgotMode(false);
+                }}
+                className="mt-6 w-full text-center text-sm text-muted-foreground hover:text-foreground"
+              >
+                Back to log in
+              </button>
+            </div>
+          ) : forgotMode ? (
+            <>
+              <h1 className="text-2xl font-bold">Reset your password</h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Enter your email and we'll send you a link to set a new password.
+              </p>
+              <form onSubmit={submitForgot} className="mt-6 space-y-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="forgot-email">Email</Label>
+                  <Input
+                    id="forgot-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={busy}>
+                  {busy ? "Please wait…" : "Send reset link"}
+                </Button>
+              </form>
+              <button
+                type="button"
+                onClick={() => setForgotMode(false)}
+                className="mt-6 w-full text-center text-sm text-muted-foreground hover:text-foreground"
+              >
+                Back to log in
+              </button>
+            </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold">{isSignup ? "Create your account" : "Welcome back"}</h1>
+              <h1 className="text-2xl font-bold">
+                {isSignup ? "Create your account" : "Welcome back"}
+              </h1>
               <p className="mt-1 text-sm text-muted-foreground">
                 {isSignup
                   ? "Publish your first property page in a couple of minutes."
@@ -145,7 +205,18 @@ function AuthPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="password">Password</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    {!isSignup ? (
+                      <button
+                        type="button"
+                        onClick={() => setForgotMode(true)}
+                        className="text-xs font-medium text-muted-foreground hover:text-foreground"
+                      >
+                        Forgot password?
+                      </button>
+                    ) : null}
+                  </div>
                   <div className="relative">
                     <Input
                       id="password"
@@ -211,4 +282,3 @@ function AuthPage() {
     </div>
   );
 }
-

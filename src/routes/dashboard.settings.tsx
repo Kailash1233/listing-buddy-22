@@ -17,12 +17,12 @@ import { Badge } from "@/components/ui/badge";
 export const Route = createFileRoute("/dashboard/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — Plotly" },
+      { title: "Settings — PropertyGenie" },
       {
         name: "description",
         content: "Update your broker profile, WhatsApp number and public profile link.",
       },
-      { property: "og:title", content: "Settings — Plotly" },
+      { property: "og:title", content: "Settings — PropertyGenie" },
       {
         property: "og:description",
         content: "Update your broker profile, WhatsApp number and public profile link.",

@@ -32,9 +32,9 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 export const Route = createFileRoute("/dashboard/properties/$id")({
   head: () => ({
     meta: [
-      { title: "Edit property — Plotly" },
+      { title: "Edit property — PropertyGenie" },
       { name: "description", content: "Update listing details, photos, price and sharing copy." },
-      { property: "og:title", content: "Edit property — Plotly" },
+      { property: "og:title", content: "Edit property — PropertyGenie" },
       { property: "og:description", content: "Update listing details, photos, price and sharing copy." },
     ],
   }),

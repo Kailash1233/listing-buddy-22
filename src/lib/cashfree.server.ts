@@ -41,7 +41,7 @@ export async function createCashfreeOrder(input: CreateOrderInput) {
       order_id: input.orderId,
       order_amount: input.amountRupees,
       order_currency: "INR",
-      order_note: input.note ?? "Plotly listing credits",
+      order_note: input.note ?? "PropertyGenie listing credits",
       customer_details: {
         customer_id: input.customer.id,
         customer_name: input.customer.name,
@@ -111,7 +111,7 @@ export async function sendPaymentEmail(opts: {
 }) {
   const apiKey = process.env["RESEND_API_KEY"];
   if (!apiKey || !opts.to) return { sent: false, reason: "not_configured" as const };
-  const from = process.env["RESEND_FROM"] ?? "Plotly <onboarding@resend.dev>";
+  const from = process.env["RESEND_FROM"] ?? "PropertyGenie <onboarding@resend.dev>";
   const amount = `₹${(opts.amountPaise / 100).toLocaleString("en-IN")}`;
 
   const html = `
@@ -119,7 +119,7 @@ export async function sendPaymentEmail(opts: {
       <h2 style="color:#0F1A63;margin:0 0 8px">Payment received</h2>
       <p>Hi ${escapeHtml(opts.name || "there")},</p>
       <p>We've received your payment of <strong>${amount}</strong> and added
-      <strong>${opts.credits} listing credits</strong> to your Plotly account.</p>
+      <strong>${opts.credits} listing credits</strong> to your PropertyGenie account.</p>
       <table style="border-collapse:collapse;margin:16px 0;font-size:14px">
         <tr><td style="padding:4px 12px 4px 0;color:#666">Order ID</td><td>${escapeHtml(opts.orderId)}</td></tr>
         ${opts.paymentId ? `<tr><td style="padding:4px 12px 4px 0;color:#666">Payment ID</td><td>${escapeHtml(opts.paymentId)}</td></tr>` : ""}

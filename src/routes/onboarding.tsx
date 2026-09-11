@@ -13,12 +13,12 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
-      { title: "Set up your broker profile — Plotly" },
+      { title: "Set up your broker profile — PropertyGenie" },
       {
         name: "description",
         content: "Add your name, WhatsApp number and profile link to start publishing property pages.",
       },
-      { property: "og:title", content: "Set up your broker profile — Plotly" },
+      { property: "og:title", content: "Set up your broker profile — PropertyGenie" },
       {
         property: "og:description",
         content: "Add your name, WhatsApp number and profile link to start publishing property pages.",

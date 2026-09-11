@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requestOrigin } from "@/lib/request-origin";
 
@@ -16,33 +15,16 @@ const eventInput = z.object({
 const leadInput = z.object({
   propertyId: z.string().uuid(),
   name: z.string().trim().min(2).max(80),
-  phone: z.string().trim().regex(/^\d{10,15}$/),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^\d{10,15}$/),
   message: z.string().trim().max(1000).nullable().optional(),
   budgetMax: z.number().int().positive().max(100_000_000_000).nullable().optional(),
+  // Honeypot: a field real visitors never see or fill in. Bots that
+  // auto-fill every input on the form trip it — see LeadForm's hidden input.
+  website: z.string().trim().max(200).optional(),
 });
-
-function clientIp(): string {
-  const forwarded = getRequestHeader("x-forwarded-for") ?? "";
-  const ip =
-    forwarded.split(",")[0]?.trim() ||
-    getRequestHeader("cf-connecting-ip") ||
-    getRequestHeader("x-real-ip") ||
-    "unknown";
-  return ip.slice(0, 60);
-}
-
-/** Returns false when the caller has exceeded the bucket's allowance. */
-async function allow(bucket: string, subject: string, limit: number, windowSeconds: number) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin.rpc("hit_rate_limit", {
-    _bucket: bucket,
-    _subject: subject,
-    _limit: limit,
-    _window_seconds: windowSeconds,
-  });
-  if (error) return true; // never block real users on a limiter outage
-  return data === true;
-}
 
 export const getPublicListing = createServerFn({ method: "GET" })
   .inputValidator((data: unknown) => listingInput.parse(data))
@@ -51,7 +33,9 @@ export const getPublicListing = createServerFn({ method: "GET" })
 
     const { data: broker } = await supabaseAdmin
       .from("brokers")
-      .select("id, name, agency_name, phone, whatsapp_number, subdomain_slug, bio, photo_url, years_experience, deals_closed")
+      .select(
+        "id, name, agency_name, phone, whatsapp_number, subdomain_slug, bio, photo_url, years_experience, deals_closed",
+      )
       .eq("subdomain_slug", data.subdomain)
       .maybeSingle();
     if (!broker) return null;
@@ -77,6 +61,7 @@ export const getPublicListing = createServerFn({ method: "GET" })
 export const trackPublicEvent = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => eventInput.parse(data))
   .handler(async ({ data }) => {
+    const { clientIp, allow } = await import("@/lib/rate-limit.server");
     const ip = clientIp();
     // Generous per-IP ceiling: real visitors never hit it, scripted inflation does.
     if (!(await allow("event", `${ip}:${data.propertyId}`, 30, 300))) {
@@ -93,6 +78,11 @@ export const trackPublicEvent = createServerFn({ method: "POST" })
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => leadInput.parse(data))
   .handler(async ({ data }) => {
+    // Pretend success without touching the DB or rate limiter — never tip
+    // off a bot that its submission was recognized as spam.
+    if (data.website) return { ok: true as const };
+
+    const { clientIp, allow } = await import("@/lib/rate-limit.server");
     const ip = clientIp();
     if (!(await allow("lead", ip, 5, 3600))) {
       return { ok: false as const, reason: "rate_limited" as const };
@@ -137,7 +127,9 @@ export const getPublicBrokerPage = createServerFn({ method: "GET" })
 
     const { data: broker } = await supabaseAdmin
       .from("brokers")
-      .select("id, name, agency_name, phone, whatsapp_number, subdomain_slug, bio, photo_url, years_experience, deals_closed")
+      .select(
+        "id, name, agency_name, phone, whatsapp_number, subdomain_slug, bio, photo_url, years_experience, deals_closed",
+      )
       .eq("subdomain_slug", data.subdomain)
       .maybeSingle();
     if (!broker) return null;

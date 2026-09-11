@@ -19,12 +19,12 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({
     meta: [
-      { title: "Your dashboard — Plotly" },
+      { title: "Your dashboard — PropertyGenie" },
       {
         name: "description",
         content: "Track views, enquiries and your live property pages in one place.",
       },
-      { property: "og:title", content: "Your dashboard — Plotly" },
+      { property: "og:title", content: "Your dashboard — PropertyGenie" },
       {
         property: "og:description",
         content: "Track views, enquiries and your live property pages in one place.",
